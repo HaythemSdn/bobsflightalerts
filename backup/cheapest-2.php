@@ -494,10 +494,11 @@ include "../config.php";
         top: 50%;
         transform: translateY(-50%);
     }
+
     .date-picker-icon {
         position: absolute;
-        right: 34px;
-        top: 36%;
+        right: 20px;
+        top: 50%;
         transform: translateY(-50%);
         z-index: 1000;
     }
@@ -1152,15 +1153,8 @@ include "../config.php";
         display: flex;
         align-items: center;
     }
-    .daterangepicker,.select2-container {
+    .daterangepicker{
         z-index: 9999 !important;
-    }
-
-    .popup .months .row {
-        width: 100%;
-        justify-content: center;
-        display: flex;
-        margin-top: 40px;
     }
 </style>
 <div style="/* background-image:url(https://www.bobsflightalerts.com/assets/img/backgrounds/blue-background.jpg) */">
@@ -1272,15 +1266,16 @@ include "../config.php";
         <div class="col-md-4">
             <div style="font-size:13px;text-align:center">Departures</div>
             <div style="background:#DFDFDF; height:80px; text-align:left;padding-top:7px"><label for="fromAirport"
-                    placeholder="Add Departure first">Where from?:</label> <i class="fas fa-plane-departure"></i><br />
-                <select id="fromAirport" class="form-control" multiple="multiple" style="width: 100%;"></select></div>
+                    placeholder="Add Destination first">Where from?:</label> <i
+                    class="fas fa-plane-departure"></i><br /> <select id="fromAirport" class="form-control"
+                    multiple="multiple" style="width: 100%;"></select></div>
 
             <!--dropdown of Departures-->
         </div>
-
         <div id="selectPopup">
             <i class="fas fa-times close-select"
-                style="position: absolute; top: 0%;right: 0%;padding-right:10px;cursor: pointer; color: red; font-size: 26px;"></i>
+            style="position: absolute; top: 0%;right: 0%;padding-right:10px;cursor: pointer; color: red; font-size: 26px;"
+            ></i>
             <div id="dropdownContainer">
 
             </div>
@@ -1300,6 +1295,45 @@ include "../config.php";
             <!--dropdown of months-->
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-3 form-group">
+            <label for="airline">Airline:</label>
+            <div class="position-relative">
+                <!-- Create a multi-search dropdown -->
+                <select id="airline" class="form-control" style="width: 100%;">
+                    
+                </select>
+            </div>
+        </div>
+            
+        <div class="col-md-3 form-group">
+            <label for="stops">Stops:</label>
+            <div class="position-relative">
+                <!-- Create a multi-search dropdown -->
+                <select id="stops" class="form-control" style="width: 100%;">
+                    
+                </select>
+                <i class="fas fa-stop date-picker-icon"></i>
+            </div>
+        </div>
+            
+        <div class="col-md-3 form-group">
+            <label for="cabins">Cabin:</label>
+            <div class="position-relative">
+                <!-- Create a multi-search dropdown -->
+                <select id="cabins" class="form-control" style="width: 100%;">
+                    
+                </select>
+            </div>
+        </div>
+
+        <div style="display: none;" class="col-md-3 form-group">
+            <div class="position-relative mt-5">
+                <input type="checkbox" id="shortStays" disabled>
+                <label for="shortStays">Short Stays</label>
+            </div>
+        </div>
+</div>
 
     <div class="my-deals-container">
         <!-- Card will be populated dynamically -->
@@ -1381,51 +1415,14 @@ include "../config.php";
                     <li>Dec</li>
                 </ul>
                 <div style="width: 100%;">
-                    <h3><span>2025</span></h3>
-                    <ul>
-                        <li>Jan</li>
-                        <li>Feb</li>
-                        <li>Mar</li>
+                <h3><span>2025</span></h3>
+                <ul>
+                    <li>Jan</li>
+                    <li>Feb</li>
+                    <li>Mar</li>
 
-                    </ul>
-                </div>
+                </ul>
             </div>
-            <div class="row">
-                <div class="col-md-4 form-group">
-                    <label for="airline">Airline:</label>
-                    <div class="position-relative">
-                        <!-- Create a multi-search dropdown -->
-                        <select id="airline" class="form-control" style="width: 100%;">
-
-                        </select>
-                    </div>
-                </div>
-
-                <div class="col-md-4 form-group">
-                    <label for="stops">Stops:</label>
-                    <div class="position-relative">
-                        <select id="stops" class="form-control" style="width: 100%;">
-
-                        </select>
-                        <i class="fas fa-stop date-picker-icon"></i>
-                    </div>
-                </div>
-
-                <div class="col-md-4 form-group">
-                    <label for="cabins">Cabin:</label>
-                    <div class="position-relative">
-                        <select id="cabins" class="form-control" style="width: 100%;">
-
-                        </select>
-                    </div>
-                </div>
-
-                <div style="display: none;" class="col-md-3 form-group">
-                    <div class="position-relative mt-5">
-                        <input type="checkbox" id="shortStays" disabled>
-                        <label for="shortStays">Short Stays</label>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -1476,14 +1473,14 @@ include "../config.php";
                     <li>Dec</li>
                 </ul>
                 <div style="width: 100%;">
-                    <h3><span>2025</span></h3>
-                    <ul>
-                        <li>Jan</li>
-                        <li>Feb</li>
-                        <li>Mar</li>
+                <h3><span>2025</span></h3>
+                <ul>
+                    <li>Jan</li>
+                    <li>Feb</li>
+                    <li>Mar</li>
 
-                    </ul>
-                </div>
+                </ul>
+            </div>
             </div>
         </div>
     </div>
