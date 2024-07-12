@@ -1024,7 +1024,7 @@ include "../config.php";
         background-color: gray;
     }
 
-    .months span {
+    .months h3 span {
         background: #fff;
         padding: 0 10px;
     }
@@ -1391,7 +1391,7 @@ include "../config.php";
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4 form-group">
+                <div class="col-sm-4 col-xs-4 form-group">
                     <label for="airline">Airline:</label>
                     <div class="position-relative">
                         <!-- Create a multi-search dropdown -->
@@ -1401,7 +1401,7 @@ include "../config.php";
                     </div>
                 </div>
 
-                <div class="col-md-4 form-group">
+                <div class="col-sm-4 col-xs-4  form-group">
                     <label for="stops">Stops:</label>
                     <div class="position-relative">
                         <select id="stops" class="form-control" style="width: 100%;">
@@ -1411,7 +1411,7 @@ include "../config.php";
                     </div>
                 </div>
 
-                <div class="col-md-4 form-group">
+                <div class="col-sm-4 col-xs-4  form-group">
                     <label for="cabins">Cabin:</label>
                     <div class="position-relative">
                         <select id="cabins" class="form-control" style="width: 100%;">
@@ -1427,6 +1427,7 @@ include "../config.php";
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </div>
     <div id="2" style="display: none;">

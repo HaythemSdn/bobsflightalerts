@@ -27,6 +27,7 @@
 
     <!-- Add Date Range Picker CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- CSS -->
 
 
@@ -49,7 +50,7 @@
 
 
 
-<nav class="navbar yamm navbar-default " style="background:#fff" role="navigation" id="BigNav">
+<!-- <nav class="navbar yamm navbar-default " style="background:#fff" role="navigation" id="BigNav">
 
     <div class="container header">
 
@@ -217,7 +218,7 @@
 
         </div>
     </div>
-</nav>
+</nav> -->
 <style>
     .navbar-nav>li>.dropdown-menu {
         width: 200px;
@@ -1334,14 +1335,16 @@
         display: flex;
         margin-top: 40px;
     }
-
+    .col-6{
+        width: 50%;
+    }
 </style>
 <br /><br />
 <div class="container" style="background:#eFeFeF;font-family: sans-serif;">
     <div class="row">
         <!--<div style="float:left;width:35%;padding:2px;">-->
 
-        <div class="col-md-4">
+        <div class="col-6  col-sm-4">
             <div style="font-size:13px;text-align:center">Destinations</div>
             <div style="background:#DFDFDF; height:80px; text-align:left;padding-top:7px"><label for="toAirport"
                     placeholder="Add Destination first">Where to? </label><i
@@ -1354,7 +1357,7 @@
 
             <!--dropdown of Destinations groups-->
         </div>
-        <div class="col-md-4">
+        <div class="col-6  col-sm-4">
             <div style="font-size:13px;text-align:center">Departures</div>
             <div style="background:#DFDFDF; height:80px; text-align:left;padding-top:7px"><label for="fromAirport"
                     placeholder="Add Departure first">Where from?:</label> <i class="fas fa-plane-departure"></i><br />
@@ -1476,7 +1479,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4 form-group">
+                <div class="col-4 form-group">
                     <label for="airline">Airline:</label>
                     <div class="position-relative">
                         <!-- Create a multi-search dropdown -->
@@ -1486,7 +1489,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4 form-group">
+                <div class="col-4  form-group">
                     <label for="stops">Stops:</label>
                     <div class="position-relative">
                         <select id="stops" class="form-control" style="width: 100%;">
@@ -1496,7 +1499,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4 form-group">
+                <div class="col-4  form-group">
                     <label for="cabins">Cabin:</label>
                     <div class="position-relative">
                         <select id="cabins" class="form-control" style="width: 100%;">
