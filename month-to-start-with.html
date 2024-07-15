@@ -1772,7 +1772,8 @@
 
 <!-- Initialize Bootstrap Multiselect with custom styling -->
 <script>
-    let subscribed = false;
+    let subscribed = true;
+    let toActivated = true;
     //************JS FOR POPUP STARTS***************************
     const initialData = [
         { to: 'Africa', city: '' },
@@ -2157,7 +2158,7 @@
         function handleToAirportChange() {
             return new Promise((resolve) => {
                 // Event handler for the change event of the "To" dropdown
-                SelectSubmitBtn.addEventListener('click', function () {
+                  
                     handlePopUp("selectPopup");
                     $('#toAirport').select2('close');
                     // Get the selected value to the "To" dropdown
@@ -2210,6 +2211,7 @@
                                 $('#fromAirport').empty();
                                 // Populate the "From" dropdown with the retrieved data
                                 populateFromDropdown(data);
+
                                 var selectedFromAirport = $('#fromAirport').val();
                                 if (selectedFromAirport == 'Everywhere') {
                                     selectedFromAirport = '';
@@ -2310,7 +2312,7 @@
                     if (selectedToAirport.every(selected => initialData.some(item => item.to === selected))) {
                         // current page to 1
                         currentPage = 1;
-                        // Get the selected value to the "To" dropdown
+                        // Get the selected value to the "From" dropdown
                         var selectedFromAirport = $("#fromAirport").val();
                         // Check if selectedToAirport is not empty
                         if (selectedToAirport.length > 0) {
@@ -2328,7 +2330,7 @@
                         getCheapestPricesOnTheBasisOfToDDLFixedValues();
                     }
                 });
-            });
+          
         }
 
 
@@ -2583,7 +2585,8 @@
         }
         //formate stops text 
         function formateStops(stops) {
-            if (stops == 0) {
+            console.log("stops", stops);
+            if (stops == 0 || stops == 'D') {
                 return 'Direct';
             }
             else if (stops == 1) {
@@ -3131,7 +3134,8 @@
                                 );
                                 // Trigger the opening of the dropdown
                                 $('#toAirport').select2('open');
-
+                                toActivated = true;
+                                
 
 
                                 // Hide the spinner
@@ -3161,7 +3165,10 @@
             });
             if (isFirstTyping) {
                 //bindOtherDDLs().then(handleToAirportChange);
+                SelectSubmitBtn.addEventListener('click', function () {
+                if (!toActivated)return
                 handleToAirportChange();
+                });
             }
         }
 
@@ -3177,12 +3184,13 @@
         }
 
         // Function to handle the "To" dropdown change event
+        $('#fromAirport').on('select2:open', function () {
 
-        $('#fromAirport').on('change', function () {
-            // Get the selected value to the "From" dropdown
-            $("#hdnDestinationGroup").val('');
-            $("#hdnDestinationTo").val('');
-
+            handlePopUp("selectPopup")
+        });
+        function handleFromAirportChange () {
+    
+            handlePopUp("selectPopup");
             var selectedFromAirport = $(this).val();
             // Get the selected value to the "To" dropdown
             var selectedToAirport = $('#toAirport').val();
@@ -3190,18 +3198,18 @@
             if (selectedFromAirport == 'Everywhere') {
                 selectedFromAirport = '';
             }
-            if (selectedFromAirport.length > 0 && selectedToAirport.length == 0) {
+            // if (selectedFromAirport.length > 0 && selectedToAirport.length == 0) {
 
-                getCheapestPricesOnTheBasisOfFromSelectedDDLAndToDDLFixedValues();
-            }
-            else if (selectedToAirport.length > 0) {
-                getCheapestPricesOnTheBasisOfToSelectionChange()
-            }
-            else {
-                getCheapestPricesOnTheBasisOfToDDLFixedValues();
-                // Resolve the promise if selectedToAirport is empty to ensure the chain continues
-                resolve();
-            }
+            //     getCheapestPricesOnTheBasisOfFromSelectedDDLAndToDDLFixedValues();
+            // }
+            // else if (selectedToAirport.length > 0) {
+            //     getCheapestPricesOnTheBasisOfToSelectionChange()
+            // }
+            // else {
+            //     getCheapestPricesOnTheBasisOfToDDLFixedValues();
+            //     // Resolve the promise if selectedToAirport is empty to ensure the chain continues
+            //     resolve();
+            // }
             // Clear the options in the "days" dropdown
             $('#days').empty().trigger('change');
 
@@ -3281,7 +3289,12 @@
                     console.error('Error fetching days data from the API:', error);
                 }
             });
+        }
+        $('#fromAirport').on('change', function () {
+            toActivated = false;
+            SelectSubmitBtn.addEventListener('click', handleFromAirportChange);
         });
+        
         // Function to populate the dropdown with data
         function populateDropdown(data) {
             var selectElement = $('#toAirport');
@@ -3356,7 +3369,11 @@
             var $option = $('#fromAirport').data('select2').$results.find('[data-select2-id="' + e.params.data._resultId + '"]');
             $option.find('input[type="checkbox"]').prop('checked', $element.data('selected'));
         });
-
+        $('#fromAirport').on('select2:closing', function (event) {
+            if (selectPopup.style.display === 'flex') {
+                event.preventDefault();
+            }
+        });
         function formatSelection(option) {
             return option.text;
         }
@@ -3620,6 +3637,7 @@
 
                 selectElement.append(option);
                 $('#fromAirport').select2({
+                    dropdownParent: $('#dropdownContainer'),
                     templateResult: formatOption,
                     templateSelection: formatSelection
                 }
