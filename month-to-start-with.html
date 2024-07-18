@@ -595,19 +595,23 @@
         .blue-button-f {
             right: 61px;
         }
+
         .show-popup {
             width: 100% !important;
             float: auto;
         }
-        .subscribe-popup{
+
+        .subscribe-popup {
             width: 100% !important;
             height: 100% !important;
-            
+
         }
-        .subscribe-popup .content h2{
+
+        .subscribe-popup .content h2 {
             font-size: 22px;
         }
-        .subscribe-popup .content h3{
+
+        .subscribe-popup .content h3 {
             font-size: 20px;
         }
     }
@@ -662,7 +666,6 @@
         right: 34px;
         top: 36%;
         transform: translateY(-50%);
-        z-index: 1000;
     }
 
     body {
@@ -1324,30 +1327,16 @@
         display: flex;
         align-items: center;
     }
-
-    .daterangepicker,.select2-container {
-        z-index: 9999 !important;
-    }
-
-    .popup .months .row {
-        width: 100%;
-        justify-content: center;
-        display: flex;
-        margin-top: 40px;
-    }
-    .col-6{
-        width: 50%;
-    }
 </style>
 <br /><br />
 <div class="container" style="background:#eFeFeF;font-family: sans-serif;">
     <div class="row">
         <!--<div style="float:left;width:35%;padding:2px;">-->
 
-        <div class="col-6  col-sm-4">
+        <div class="col-md-4">
             <div style="font-size:13px;text-align:center">Destinations</div>
             <div style="background:#DFDFDF; height:80px; text-align:left;padding-top:7px"><label for="toAirport"
-                    placeholder="Add Destination first">Where to? </label><i
+                    placeholder="Add Destination first">Where to?: </label><i
                     class="fas fa-plane-arrival"></i><br /><select id="toAirport" class="form-control initial-select"
                     multiple="multiple" style="width: 100%;" placeholder="+ Add another">
 
@@ -1357,11 +1346,12 @@
 
             <!--dropdown of Destinations groups-->
         </div>
-        <div class="col-6  col-sm-4">
+        <div class="col-md-4">
             <div style="font-size:13px;text-align:center">Departures</div>
             <div style="background:#DFDFDF; height:80px; text-align:left;padding-top:7px"><label for="fromAirport"
                     placeholder="Add Departure first">Where from?:</label> <i class="fas fa-plane-departure"></i><br />
-                <select id="fromAirport" class="form-control" multiple="multiple" style="width: 100%;"></select></div>
+                <select id="fromAirport" class="form-control" multiple="multiple" style="width: 100%;"></select>
+            </div>
 
             <!--dropdown of Departures-->
         </div>
@@ -1388,7 +1378,43 @@
             <!--dropdown of months-->
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-3 form-group">
+            <label for="airline">Airline:</label>
+            <div class="position-relative">
+                <!-- Create a multi-search dropdown -->
+                <select id="airline" class="form-control" style="width: 100%;">
 
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-3  form-group">
+            <label for="stops">Stops:</label>
+            <div class="position-relative">
+                <select id="stops" class="form-control" style="width: 100%;">
+
+                </select>
+                <i class="fas fa-stop date-picker-icon"></i>
+            </div>
+        </div>
+
+        <div class="col-md-3  form-group">
+            <label for="cabins">Cabin:</label>
+            <div class="position-relative">
+                <select id="cabins" class="form-control" style="width: 100%;">
+
+                </select>
+            </div>
+        </div>
+
+        <div style="display: none;" class="col-md-3 form-group">
+            <div class="position-relative mt-5">
+                <input type="checkbox" id="shortStays" disabled>
+                <label for="shortStays">Short Stays</label>
+            </div>
+        </div>
+    </div>
     <div class="my-deals-container">
         <!-- Card will be populated dynamically -->
     </div>
@@ -1430,8 +1456,7 @@
 <!-- Popup for Dates -->
 <div class="popup" id="popup">
     <i class="fas fa-times close"
-        style="position: absolute; top: 0%;right: 0%;padding:10px;cursor: pointer; color: red; font-size: 26px;"
-        ></i>
+        style="position: absolute; top: 0%;right: 0%;padding:10px;cursor: pointer; color: red; font-size: 26px;"></i>
     <h2>You have chosen </h2>
     <div class="months-result">
         <i class="fas fa-calendar" style="margin-right: 10px;"></i>
@@ -1476,43 +1501,6 @@
                         <li>Mar</li>
 
                     </ul>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-4 form-group">
-                    <label for="airline">Airline:</label>
-                    <div class="position-relative">
-                        <!-- Create a multi-search dropdown -->
-                        <select id="airline" class="form-control" style="width: 100%;">
-
-                        </select>
-                    </div>
-                </div>
-
-                <div class="col-4  form-group">
-                    <label for="stops">Stops:</label>
-                    <div class="position-relative">
-                        <select id="stops" class="form-control" style="width: 100%;">
-
-                        </select>
-                        <i class="fas fa-stop date-picker-icon"></i>
-                    </div>
-                </div>
-
-                <div class="col-4  form-group">
-                    <label for="cabins">Cabin:</label>
-                    <div class="position-relative">
-                        <select id="cabins" class="form-control" style="width: 100%;">
-
-                        </select>
-                    </div>
-                </div>
-
-                <div style="display: none;" class="col-md-3 form-group">
-                    <div class="position-relative mt-5">
-                        <input type="checkbox" id="shortStays" disabled>
-                        <label for="shortStays">Short Stays</label>
-                    </div>
                 </div>
             </div>
         </div>
@@ -1776,6 +1764,7 @@
     let toActivated = true;
     //************JS FOR POPUP STARTS***************************
     const initialData = [
+        { to: 'Asia', city: '' },
         { to: 'Africa', city: '' },
         { to: 'America', city: '' },
         { to: 'Australia', city: '' },
@@ -2158,187 +2147,190 @@
         function handleToAirportChange() {
             return new Promise((resolve) => {
                 // Event handler for the change event of the "To" dropdown
-                  
-                    handlePopUp("selectPopup");
-                    $('#toAirport').select2('close');
-                    // Get the selected value to the "To" dropdown
-                    var selectedToAirport = $('#toAirport').val();
 
-                    // Clear the options in the "From" dropdown using Select2, haven't used trigger event here bcz if we use then it will trigger fromAirport change event and the load ddls from db endpoints call twice
-                    $('#fromAirport').empty();
+                handlePopUp("selectPopup");
+                $('#toAirport').select2('close');
+                // Get the selected value to the "To" dropdown
+                var selectedToAirport = $('#toAirport').val();
 
-                    // Clear the options in the "days" dropdown
-                    $('#days').empty().trigger('change');
+                // Clear the options in the "From" dropdown using Select2, haven't used trigger event here bcz if we use then it will trigger fromAirport change event and the load ddls from db endpoints call twice
+                $('#fromAirport').empty();
 
-                    // Clear the options in the "cabins" dropdown
-                    $('#stops').empty().trigger('change');
+                // Clear the options in the "days" dropdown
+                $('#days').empty().trigger('change');
 
-                    // Clear the options in the "cabins" dropdown
-                    $('#cabins').empty().trigger('change');
+                // Clear the options in the "cabins" dropdown
+                $('#stops').empty().trigger('change');
 
-                    // Clear the options in the "airlines" dropdown
-                    $('#airline').empty().trigger('change');
+                // Clear the options in the "cabins" dropdown
+                $('#cabins').empty().trigger('change');
 
+                // Clear the options in the "airlines" dropdown
+                $('#airline').empty().trigger('change');
+
+                // Check if selectedToAirport is not empty
+                if (selectedToAirport.length > 0) {
+                    populateToChange(selectedToAirport)
+                } else {
+                    // Resolve the promise if selectedToAirport is empty to ensure the chain continues
+                    resolve();
+                };
+
+                $("#hdnDestinationGroup").val('');
+                $("#hdnDestinationTo").val('');
+                if (selectedToAirport.every(selected => initialData.some(item => item.to === selected))) {
+                    // current page to 1
+                    currentPage = 1;
+                    // Get the selected value to the "From" dropdown
+                    var selectedFromAirport = $("#fromAirport").val();
                     // Check if selectedToAirport is not empty
                     if (selectedToAirport.length > 0) {
-                        // Make an API request to fetch data based on the selected "To" airport
-                        var apiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                            ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetFromAirports'
-                            : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetFromAirportsByToAirports?toAirports=' + selectedToAirport;
-
-                        var daysApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                            ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllDays'
-                            : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllDaysByToAndFromAirports?toAirports=' + selectedToAirport;
-
-                        var stopsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                            ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllStops'
-                            : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllStopsByToAndFromAirports?toAirports=' + selectedToAirport;
-
-                        var cabinsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                            ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllCabins'
-                            : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllCabinsByToAndFromAirports?toAirports=' + selectedToAirport;
-
-                        var airlinesApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                            ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllAirlines'
-                            : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllAirlinesByToAndFromAirports?toAirports=' + selectedToAirport;
-
-                        $.ajax({
-                            url: apiUrl,
-                            method: 'GET',
-                            success: function (data) {
-                                // Assuming 'data' is the array of objects you provided
-                                // Remove existing options
-                                $('#fromAirport').empty();
-                                // Populate the "From" dropdown with the retrieved data
-                                populateFromDropdown(data);
-
-                                var selectedFromAirport = $('#fromAirport').val();
-                                if (selectedFromAirport == 'Everywhere') {
-                                    selectedFromAirport = '';
-                                }
-                                // i.e. on page load we have 'from ddl' is selected as well, then search based on both from and to
-                                if (selectedFromAirport.length > 0) {
-                                    daysApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                                        ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllDays'
-                                        : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllDaysByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
-
-                                    stopsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                                        ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllStops'
-                                        : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllStopsByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
-
-                                    cabinsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                                        ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllCabins'
-                                        : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllCabinsByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
-
-                                    airlinesApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                                        ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllAirlines'
-                                        : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllAirlinesByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
-                                }
-                                // Make another API request to fetch days data
-                                $.ajax({
-                                    url: daysApiUrl,
-                                    method: 'GET',
-                                    success: function (daysData) {
-                                        // Populate the "days" dropdown with the retrieved data
-                                        populateOtherDropdowns(daysData, "#days");
-
-                                        // Make another API request to fetch stops data
-                                        $.ajax({
-                                            url: stopsApiUrl,
-                                            method: 'GET',
-                                            success: function (stopsData) {
-                                                // Populate the "stops" dropdown with the retrieved data
-                                                populateOtherDropdowns(stopsData, "#stops");
-
-                                                // Make another API request to fetch cabins data
-                                                $.ajax({
-                                                    url: cabinsApiUrl,
-                                                    method: 'GET',
-                                                    success: function (cabinsData) {
-                                                        // Populate the "cabins" dropdown with the retrieved data
-                                                        populateOtherDropdowns(cabinsData, "#cabins");
-
-                                                        // Make another API request to fetch airlines data
-                                                        $.ajax({
-                                                            url: airlinesApiUrl,
-                                                            method: 'GET',
-                                                            success: function (airlinesData) {
-                                                                // Populate the "airlines" dropdown with the retrieved data
-                                                                populateOtherDropdowns(airlinesData, "#airline");
-                                                                // Resolve the promise to signal completion
-                                                                resolve();
-                                                            },
-                                                            error: function (error) {
-                                                                console.error('Error fetching airlines data from the API:', error);
-                                                                // Resolve the promise even if there's an error to ensure the chain continues
-                                                                resolve();
-                                                            }
-                                                        });
-                                                    },
-                                                    error: function (error) {
-                                                        console.error('Error fetching cabins data from the API:', error);
-                                                        // Resolve the promise even if there's an error to ensure the chain continues
-                                                        resolve();
-                                                    }
-                                                });
-                                            },
-                                            error: function (error) {
-                                                console.error('Error fetching stops data from the API:', error);
-                                                // Resolve the promise even if there's an error to ensure the chain continues
-                                                resolve();
-                                            }
-                                        });
-                                    },
-                                    error: function (error) {
-                                        console.error('Error fetching days data from the API:', error);
-                                        // Resolve the promise even if there's an error to ensure the chain continues
-                                        resolve();
-                                    }
-                                });
-
-                            },
-                            error: function (error) {
-                                console.error('Error fetching data from the API:', error);
-                                // Resolve the promise even if there's an error to ensure the chain continues
-                                resolve();
-                            }
-                        });
+                        // Load data from "fromDDL" to "All Groups in toDDL"
+                        getCheapestPricesOnTheBasisOfToSelectionChange();
                     } else {
-                        // Resolve the promise if selectedToAirport is empty to ensure the chain continues
-                        resolve();
-                    };
-                    $("#hdnDestinationGroup").val('');
-                    $("#hdnDestinationTo").val('');
-                    if (selectedToAirport.every(selected => initialData.some(item => item.to === selected))) {
-                        // current page to 1
-                        currentPage = 1;
-                        // Get the selected value to the "From" dropdown
-                        var selectedFromAirport = $("#fromAirport").val();
-                        // Check if selectedToAirport is not empty
-                        if (selectedToAirport.length > 0) {
-                            // Load data from "fromDDL" to "All Groups in toDDL"
-                            getCheapestPricesOnTheBasisOfToSelectionChange();
-                        } else {
-                            if (selectedFromAirport.length > 0) {
-                                getCheapestPricesOnTheBasisOfFromSelectedDDLAndToDDLFixedValues();
-                            }
-                            else {
-                                getCheapestPricesOnTheBasisOfToDDLFixedValues();
-                            }
+                        if (selectedFromAirport.length > 0) {
+                            getCheapestPricesOnTheBasisOfFromSelectedDDLAndToDDLFixedValues();
                         }
-                    } else {
-                        getCheapestPricesOnTheBasisOfToDDLFixedValues();
+                        else {
+                            getCheapestPricesOnTheBasisOfToDDLFixedValues();
+                        }
                     }
-                });
-          
-        }
+                } else {
+                    getCheapestPricesOnTheBasisOfToDDLFixedValues();
+                }
+            });
 
+        }
+        //added by haythem
+        function populateToChange(selectedToAirport) {
+            // Make an API request to fetch data based on the selected "To" airport
+            var apiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
+                ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetFromAirports'
+                : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetFromAirportsByToAirports?toAirports=' + selectedToAirport;
+
+            var daysApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
+                ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllDays'
+                : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllDaysByToAndFromAirports?toAirports=' + selectedToAirport;
+
+            var stopsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
+                ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllStops'
+                : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllStopsByToAndFromAirports?toAirports=' + selectedToAirport;
+
+            var cabinsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
+                ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllCabins'
+                : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllCabinsByToAndFromAirports?toAirports=' + selectedToAirport;
+
+            var airlinesApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
+                ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllAirlines'
+                : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllAirlinesByToAndFromAirports?toAirports=' + selectedToAirport;
+
+            $.ajax({
+                url: apiUrl,
+                method: 'GET',
+                success: function (data) {
+                    // Assuming 'data' is the array of objects you provided
+                    // Remove existing options
+                    $('#fromAirport').empty();
+                    // Populate the "From" dropdown with the retrieved data
+                    populateFromDropdown(data);
+
+                    var selectedFromAirport = $('#fromAirport').val();
+                    if (selectedFromAirport == 'Everywhere') {
+                        selectedFromAirport = '';
+                    }
+                    // i.e. on page load we have 'from ddl' is selected as well, then search based on both from and to
+                    if (selectedFromAirport.length > 0) {
+                        daysApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
+                            ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllDays'
+                            : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllDaysByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
+
+                        stopsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
+                            ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllStops'
+                            : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllStopsByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
+
+                        cabinsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
+                            ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllCabins'
+                            : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllCabinsByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
+
+                        airlinesApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
+                            ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllAirlines'
+                            : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllAirlinesByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
+                    }
+                    // Make another API request to fetch days data
+                    $.ajax({
+                        url: daysApiUrl,
+                        method: 'GET',
+                        success: function (daysData) {
+                            // Populate the "days" dropdown with the retrieved data
+                            populateOtherDropdowns(daysData, "#days");
+
+                            // Make another API request to fetch stops data
+                            $.ajax({
+                                url: stopsApiUrl,
+                                method: 'GET',
+                                success: function (stopsData) {
+                                    // Populate the "stops" dropdown with the retrieved data
+                                    populateOtherDropdowns(stopsData, "#stops");
+
+                                    // Make another API request to fetch cabins data
+                                    $.ajax({
+                                        url: cabinsApiUrl,
+                                        method: 'GET',
+                                        success: function (cabinsData) {
+                                            // Populate the "cabins" dropdown with the retrieved data
+                                            populateOtherDropdowns(cabinsData, "#cabins");
+
+                                            // Make another API request to fetch airlines data
+                                            $.ajax({
+                                                url: airlinesApiUrl,
+                                                method: 'GET',
+                                                success: function (airlinesData) {
+                                                    // Populate the "airlines" dropdown with the retrieved data
+                                                    populateOtherDropdowns(airlinesData, "#airline");
+                                                    // Resolve the promise to signal completion
+                                                    // resolve();
+                                                },
+                                                error: function (error) {
+                                                    console.error('Error fetching airlines data from the API:', error);
+                                                    // Resolve the promise even if there's an error to ensure the chain continues
+                                                    // resolve();
+                                                }
+                                            });
+                                        },
+                                        error: function (error) {
+                                            console.error('Error fetching cabins data from the API:', error);
+                                            // Resolve the promise even if there's an error to ensure the chain continues
+                                            // resolve();
+                                        }
+                                    });
+                                },
+                                error: function (error) {
+                                    console.error('Error fetching stops data from the API:', error);
+                                    // Resolve the promise even if there's an error to ensure the chain continues
+                                    // resolve();
+                                }
+                            });
+                        },
+                        error: function (error) {
+                            console.error('Error fetching days data from the API:', error);
+                            // Resolve the promise even if there's an error to ensure the chain continues
+                            // resolve();
+                        }
+                    });
+
+                },
+                error: function (error) {
+                    console.error('Error fetching data from the API:', error);
+                    // Resolve the promise even if there's an error to ensure the chain continues
+                    resolve();
+                }
+            });
+        }
 
         function getCheapestPricesOnTheBasisOfToDDLFixedValues() {
             let pageSize = 5;
             let page = currentPage;
-            // const dropdown = document.getElementById('toAirport');
-            // const options = dropdown.options;
+
             let commaSeparatedString = '';
 
             for (let i = 0; i < initialData.length; i++) {
@@ -2686,7 +2678,7 @@
         });
 
         function populateCardOrTable(deals, isCard, isDepToDestForAllPrices) {
-      
+
             // Remove records where new_price is 0
             deals = deals.filter(function (deal) {
                 return parseFloat(deal.new_price) !== 0;
@@ -3135,7 +3127,7 @@
                                 // Trigger the opening of the dropdown
                                 $('#toAirport').select2('open');
                                 toActivated = true;
-                                
+
 
 
                                 // Hide the spinner
@@ -3166,8 +3158,8 @@
             if (isFirstTyping) {
                 //bindOtherDDLs().then(handleToAirportChange);
                 SelectSubmitBtn.addEventListener('click', function () {
-                if (!toActivated)return
-                handleToAirportChange();
+                    if (!toActivated) return
+                    handleToAirportChange();
                 });
             }
         }
@@ -3188,28 +3180,26 @@
 
             handlePopUp("selectPopup")
         });
-        function handleFromAirportChange () {
-    
+        function handleFromAirportChange() {
+
             handlePopUp("selectPopup");
+            $("#hdnDestinationGroup").val('');
+            $("#hdnDestinationTo").val('');
+            // current page to 1
+            currentPage = 1;
+            // Get the selected value to the "From" dropdown
             var selectedFromAirport = $(this).val();
-            // Get the selected value to the "To" dropdown
-            var selectedToAirport = $('#toAirport').val();
+
+            var selectedToAirport = $("#toAirport").val();
 
             if (selectedFromAirport == 'Everywhere') {
                 selectedFromAirport = '';
             }
-            // if (selectedFromAirport.length > 0 && selectedToAirport.length == 0) {
 
-            //     getCheapestPricesOnTheBasisOfFromSelectedDDLAndToDDLFixedValues();
-            // }
-            // else if (selectedToAirport.length > 0) {
-            //     getCheapestPricesOnTheBasisOfToSelectionChange()
-            // }
-            // else {
-            //     getCheapestPricesOnTheBasisOfToDDLFixedValues();
-            //     // Resolve the promise if selectedToAirport is empty to ensure the chain continues
-            //     resolve();
-            // }
+            if (selectedToAirport == 'Everywhere') {
+                selectedToAirport = '';
+            }
+
             // Clear the options in the "days" dropdown
             $('#days').empty().trigger('change');
 
@@ -3289,12 +3279,25 @@
                     console.error('Error fetching days data from the API:', error);
                 }
             });
+            if (selectedFromAirport.length > 0 && selectedToAirport.length == 0) {
+
+                getCheapestPricesOnTheBasisOfFromSelectedDDLAndToDDLFixedValues();
+            }
+            else if (selectedToAirport.length > 0) {
+                console.log("yes");
+                getCheapestPricesOnTheBasisOfToSelectionChange()
+            }
+            else {
+                getCheapestPricesOnTheBasisOfToDDLFixedValues();
+                // Resolve the promise if selectedToAirport is empty to ensure the chain continues
+                resolve();
+            }
         }
         $('#fromAirport').on('change', function () {
             toActivated = false;
             SelectSubmitBtn.addEventListener('click', handleFromAirportChange);
         });
-        
+
         // Function to populate the dropdown with data
         function populateDropdown(data) {
             var selectElement = $('#toAirport');
@@ -3404,10 +3407,19 @@
         });
         // Attach click event handler using jQuery
         $(document).on('click', '.row-cheapest-cards', function () {
-            if (!subscribed){
+            if (!subscribed) {
                 handlePopUp("subscribe-popup");
                 return;
             }
+            // // Clear the options in the "cabins" dropdown
+            $('#stops').empty().trigger('change');
+
+            // // Clear the options in the "cabins" dropdown
+            $('#cabins').empty().trigger('change');
+
+            // // Clear the options in the "airlines" dropdown
+            $('#airline').empty().trigger('change');
+
             // make current page as 1
             currentPage = 1;
 
@@ -3420,6 +3432,9 @@
             var sortBy = $('#sortPriceCardDDL').val(); // by default it's New_Price
             var dates = getFromAndToDates();
             group !== 'undefined' ? loadCheapestPrices(fromdropdown, destination, dates.fromDate, dates.toDate, currentPage) : loadAllPrices(fromdropdown, destination, dates.fromDate, dates.toDate, currentPage, sortBy);
+            if(group !== 'undefined'){
+                populateToChange(destination)
+            }
         });
 
         function getFromAndToDates() {
@@ -3488,14 +3503,6 @@
                     let isCard = true;
                     //populatingCardOrTable
                     populateCardOrTable(deals, isCard, false);
-
-                    // Show or hide "Load More" button based on total pages
-                    // if (currentPage < response.totalPages) {
-                    // 	$('#loadMoreBtn').show();
-                    // } 
-                    // else {
-                    // 	$('#loadMoreBtn').hide();
-                    // }
                 },
                 error: function (error) {
                     // Handle the error response
@@ -3550,11 +3557,12 @@
             const dropdown = document.getElementById('toAirport');
             const options = dropdown.options;
             var dates = getFromAndToDates();
+
             let commaSeparatedString = '';
 
-            for (let i = 0; i < options.length; i++) {
-                commaSeparatedString += options[i].value;
-                if (i < options.length - 1) {
+            for (let i = 0; i < initialData.length; i++) {
+                commaSeparatedString += initialData[i].to;
+                if (i < initialData.length - 1) {
                     commaSeparatedString += ', ';
                 }
             }
@@ -3877,14 +3885,14 @@
                 getResult();
                 // var selectedFromAirport = $("#fromAirport").val();
 
-                // var selectedToirport = $("#toAirport").val();
+                // var selectedToAirport = $("#toAirport").val();
 
                 // Check if selectedFromAirport is not empty
-                // if (selectedFromAirport.length > 0 && selectedToirport.length == 0) {
+                // if (selectedFromAirport.length > 0 && selectedToAirport.length == 0) {
                 //     // Load data from "fromDDL" to "All Groups in toDDL"
                 //     getCheapestPricesOnTheBasisOfFromSelectedDDLAndToDDLFixedValues();
                 // }
-                // else if (selectedToirport.length > 0) {
+                // else if (selectedToAirport.length > 0) {
                 //     getCheapestPricesOnTheBasisOfToSelectionChange()
                 // }
                 // else {
