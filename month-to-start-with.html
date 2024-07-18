@@ -1415,6 +1415,10 @@
             </div>
         </div>
     </div>
+    <div class="submit" style="margin-top: 0;">
+        <button  id="submit-filters"  style="background-color:#14b0f7; color: white; border-color: #14b0f7; "
+        >Submit</button>
+    </div>
     <div class="my-deals-container">
         <!-- Card will be populated dynamically -->
     </div>
@@ -1786,7 +1790,8 @@
     const ShortStaysTab = document.getElementById('ShortStaysTab');
     const MonthsTab = document.getElementById('MonthsTab');
     const CustomRangeTab = document.getElementById('CustomRangeTab');
-    const apply = document.querySelector('.applyDate');
+    const applyDate = document.querySelector('.applyDate');
+    const applyFilters=document.getElementById("submit-filters")
     const showPopupDiv = document.querySelector(".show-popup");
     const close = document.querySelector(".close");
     const popup = document.getElementById("popup");
@@ -2109,7 +2114,7 @@
                 dateTo: toDate ? toDate : '2025-01-31',
                 isTargetOnly: false,
                 // selectedStops: $("#stops").val(),
-                selectedDays: 14,
+                // selectedDays: 14,
                 // selectedCabin: $("#cabins").val(),
                 // airline: $("#airline").val(),
                 // aircode: $("#aircode").val(),
@@ -3804,8 +3809,42 @@
         //         selectElement.append(option);
         //     });
         // }
-        //hqndle apply button
-        apply.addEventListener('click', function () {
+
+        // handle apply Date button
+        applyFilters.addEventListener('click',()=>{
+             // Temp Code, so that filter date functionality works only for cards
+                // let hdnGroup = $("#hdnDestinationGroup").val();
+                // let hdnDestination = $("#hdnDestinationTo").val();
+                // var destination = hdnGroup !== 'undefined' ? hdnGroup : hdnDestination;
+                // if (hdnGroup == "undefined" && hdnDestination != "undefined" && hdnDestination != ""){
+                //     $('#sortPriceCardDDL').trigger('change');
+                // console.log("No result");
+                // }
+
+                // else {
+                    currentPage = 1;
+                // Get the selected value to the "From" dropdown
+                getResult();
+                // var selectedFromAirport = $("#fromAirport").val();
+
+                // var selectedToAirport = $("#toAirport").val();
+
+                // Check if selectedFromAirport is not empty
+                // if (selectedFromAirport.length > 0 && selectedToAirport.length == 0) {
+                //     // Load data from "fromDDL" to "All Groups in toDDL"
+                //     getCheapestPricesOnTheBasisOfFromSelectedDDLAndToDDLFixedValues();
+                // }
+                // else if (selectedToAirport.length > 0) {
+                //     getCheapestPricesOnTheBasisOfToSelectionChange()
+                // }
+                // else {
+                //     getCheapestPricesOnTheBasisOfToDDLFixedValues();
+                // }
+                // }
+        })
+        // handle apply filters button
+
+        applyDate.addEventListener('click', function () {
             const monthElements = document.querySelectorAll('.months .month li');
 
             const startingMonthList = Array.from(monthElements).filter(li => {
@@ -3870,35 +3909,7 @@
                 var MonthsResult = document.getElementById("MonthsResult");
                 MonthsResult.textContent = document.querySelector('.show-result').textContent
                 popup.style.display = "none";
-                // Temp Code, so that filter date functionality works only for cards
-                let hdnGroup = $("#hdnDestinationGroup").val();
-                let hdnDestination = $("#hdnDestinationTo").val();
-                var destination = hdnGroup !== 'undefined' ? hdnGroup : hdnDestination;
-                // if (hdnGroup == "undefined" && hdnDestination != "undefined" && hdnDestination != ""){
-                //     $('#sortPriceCardDDL').trigger('change');
-                // console.log("No result");
-                // }
-
-                // else {
-                currentPage = 1;
-                // Get the selected value to the "From" dropdown
-                getResult();
-                // var selectedFromAirport = $("#fromAirport").val();
-
-                // var selectedToAirport = $("#toAirport").val();
-
-                // Check if selectedFromAirport is not empty
-                // if (selectedFromAirport.length > 0 && selectedToAirport.length == 0) {
-                //     // Load data from "fromDDL" to "All Groups in toDDL"
-                //     getCheapestPricesOnTheBasisOfFromSelectedDDLAndToDDLFixedValues();
-                // }
-                // else if (selectedToAirport.length > 0) {
-                //     getCheapestPricesOnTheBasisOfToSelectionChange()
-                // }
-                // else {
-                //     getCheapestPricesOnTheBasisOfToDDLFixedValues();
-                // }
-                // }
+               
             }, 1000);
 
             // Temp Code
@@ -3910,7 +3921,6 @@
 
             // Convert the formData object to a query string
             var queryString = $.param(filteredFormData);
-            console.log("Params=>", queryString);
             // Make an AJAX request to submit the form data
             $.ajax({
                 type: "GET",
@@ -3921,7 +3931,6 @@
                     // Handle the successful response
                     // Assuming response is an array of deals
                     deals = response;
-                    console.log("Response=>", deals);
                     let isCard = true;
                     //populatingCardOrTable
                     populateCardOrTable(deals, isCard, true);
