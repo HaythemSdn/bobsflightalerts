@@ -1416,8 +1416,8 @@
         </div>
     </div>
     <div class="submit" style="margin-top: 0;">
-        <button  id="submit-filters"  style="background-color:#14b0f7; color: white; border-color: #14b0f7; "
-        >Submit</button>
+        <button id="submit-filters"
+            style="background-color:#14b0f7; color: white; border-color: #14b0f7; ">Submit</button>
     </div>
     <div class="my-deals-container">
         <!-- Card will be populated dynamically -->
@@ -1791,7 +1791,7 @@
     const MonthsTab = document.getElementById('MonthsTab');
     const CustomRangeTab = document.getElementById('CustomRangeTab');
     const applyDate = document.querySelector('.applyDate');
-    const applyFilters=document.getElementById("submit-filters")
+    const applyFilters = document.getElementById("submit-filters")
     const showPopupDiv = document.querySelector(".show-popup");
     const close = document.querySelector(".close");
     const popup = document.getElementById("popup");
@@ -2143,10 +2143,39 @@
                 filteredFormData: filteredFormData
             };
         }
-        //handle select buttons
+        //handle clear buttons
+        function clearAllSelections(selectId) {
+        // Clear the selection in Select2
+        $('#' + selectId).val(null).trigger('change');
 
+        // Manually trigger unselect event for each previously selected option
+        $('#' + selectId + ' option').each(function() {
+            var $option = $(this);
+            if ($option.data('selected')) {
+                $option.data('selected', false);
+                var data = $option.data();
+                $('#' + selectId).trigger({
+                    type: 'select2:unselect',
+                    params: {
+                        data: data
+                    }
+                });
+            }
+        });
+        // Make sure all checkboxes are unchecked and aria-selected is false
+        var $select2Results = $('#' + selectId).data('select2').$results;
+        $select2Results.find('li[role="option"]').each(function() {
+            $(this).attr('aria-selected', 'false');
+            $(this).find('input[type="checkbox"]').prop('checked', false);
+        });
+    }
         CancleSubmitBtn.addEventListener('click', function () {
-            window.location.reload();
+            if (toActivated) {
+                clearAllSelections('toAirport');
+            } else {
+                clearAllSelections('fromAirport');
+                
+            } 
         });
 
         function handleToAirportChange() {
@@ -2582,7 +2611,6 @@
         }
         //formate stops text 
         function formateStops(stops) {
-            console.log("stops", stops);
             if (stops == 0 || stops == 'D') {
                 return 'Direct';
             }
@@ -3103,7 +3131,7 @@
 
             // Event listener for typing into select2 input
             $('#toAirport').on('select2:open', function () {
-
+                toActivated = true;
                 //show select popup
                 handlePopUp("selectPopup")
                 // Event listener for typing into select2 input
@@ -3131,7 +3159,6 @@
                                 );
                                 // Trigger the opening of the dropdown
                                 $('#toAirport').select2('open');
-                                toActivated = true;
 
 
 
@@ -3182,7 +3209,7 @@
 
         // Function to handle the "To" dropdown change event
         $('#fromAirport').on('select2:open', function () {
-
+            toActivated = false;
             handlePopUp("selectPopup")
         });
         function handleFromAirportChange() {
@@ -3289,7 +3316,6 @@
                 getCheapestPricesOnTheBasisOfFromSelectedDDLAndToDDLFixedValues();
             }
             else if (selectedToAirport.length > 0) {
-                console.log("yes");
                 getCheapestPricesOnTheBasisOfToSelectionChange()
             }
             else {
@@ -3299,7 +3325,6 @@
             }
         }
         $('#fromAirport').on('change', function () {
-            toActivated = false;
             SelectSubmitBtn.addEventListener('click', handleFromAirportChange);
         });
 
@@ -3326,7 +3351,6 @@
             // // Attach event listener for checkbox changes
 
         }
-
         function formatOption(option) {
             if (!option.id) {
                 return option.text;
@@ -3341,6 +3365,17 @@
 
             return $option;
         }
+        function treatCheckBox() {
+            $('input[type="checkbox"]').click(function (event) {
+                var $checkbox = $(this);
+                // Ensures this code runs AFTER the browser handles click however it wants.
+                setTimeout(function () {
+                    $checkbox.removeAttr('checked');
+                }, 0);
+                event.preventDefault();
+                event.stopPropagation();
+            });
+        }
         $('#toAirport').on('select2:select select2:unselect', function (e) {
 
             var element = e.params.data.element;
@@ -3351,10 +3386,11 @@
             } else if (e.type === 'select2:unselect') {
                 $element.data('selected', false);
             }
-
+            treatCheckBox();
             // Update the checkbox
             var $option = $('#toAirport').data('select2').$results.find('[data-select2-id="' + e.params.data._resultId + '"]');
             $option.find('input[type="checkbox"]').prop('checked', $element.data('selected'));
+
 
         });
         $('#toAirport').on('select2:closing', function (event) {
@@ -3366,6 +3402,7 @@
             var element = e.params.data.element;
             var $element = $(element);
 
+            treatCheckBox();
             // Toggle the checkbox state based on selection
             if (e.type === 'select2:select') {
                 $element.data('selected', true);
@@ -3437,7 +3474,7 @@
             var sortBy = $('#sortPriceCardDDL').val(); // by default it's New_Price
             var dates = getFromAndToDates();
             group !== 'undefined' ? loadCheapestPrices(fromdropdown, destination, dates.fromDate, dates.toDate, currentPage) : loadAllPrices(fromdropdown, destination, dates.fromDate, dates.toDate, currentPage, sortBy);
-            if(group !== 'undefined'){
+            if (group !== 'undefined') {
                 populateToChange(destination)
             }
         });
@@ -3811,36 +3848,36 @@
         // }
 
         // handle apply Date button
-        applyFilters.addEventListener('click',()=>{
-             // Temp Code, so that filter date functionality works only for cards
-                // let hdnGroup = $("#hdnDestinationGroup").val();
-                // let hdnDestination = $("#hdnDestinationTo").val();
-                // var destination = hdnGroup !== 'undefined' ? hdnGroup : hdnDestination;
-                // if (hdnGroup == "undefined" && hdnDestination != "undefined" && hdnDestination != ""){
-                //     $('#sortPriceCardDDL').trigger('change');
-                // console.log("No result");
-                // }
+        applyFilters.addEventListener('click', () => {
+            // Temp Code, so that filter date functionality works only for cards
+            // let hdnGroup = $("#hdnDestinationGroup").val();
+            // let hdnDestination = $("#hdnDestinationTo").val();
+            // var destination = hdnGroup !== 'undefined' ? hdnGroup : hdnDestination;
+            // if (hdnGroup == "undefined" && hdnDestination != "undefined" && hdnDestination != ""){
+            //     $('#sortPriceCardDDL').trigger('change');
+            // console.log("No result");
+            // }
 
-                // else {
-                    currentPage = 1;
-                // Get the selected value to the "From" dropdown
-                getResult();
-                // var selectedFromAirport = $("#fromAirport").val();
+            // else {
+            currentPage = 1;
+            // Get the selected value to the "From" dropdown
+            getResult();
+            // var selectedFromAirport = $("#fromAirport").val();
 
-                // var selectedToAirport = $("#toAirport").val();
+            // var selectedToAirport = $("#toAirport").val();
 
-                // Check if selectedFromAirport is not empty
-                // if (selectedFromAirport.length > 0 && selectedToAirport.length == 0) {
-                //     // Load data from "fromDDL" to "All Groups in toDDL"
-                //     getCheapestPricesOnTheBasisOfFromSelectedDDLAndToDDLFixedValues();
-                // }
-                // else if (selectedToAirport.length > 0) {
-                //     getCheapestPricesOnTheBasisOfToSelectionChange()
-                // }
-                // else {
-                //     getCheapestPricesOnTheBasisOfToDDLFixedValues();
-                // }
-                // }
+            // Check if selectedFromAirport is not empty
+            // if (selectedFromAirport.length > 0 && selectedToAirport.length == 0) {
+            //     // Load data from "fromDDL" to "All Groups in toDDL"
+            //     getCheapestPricesOnTheBasisOfFromSelectedDDLAndToDDLFixedValues();
+            // }
+            // else if (selectedToAirport.length > 0) {
+            //     getCheapestPricesOnTheBasisOfToSelectionChange()
+            // }
+            // else {
+            //     getCheapestPricesOnTheBasisOfToDDLFixedValues();
+            // }
+            // }
         })
         // handle apply filters button
 
@@ -3909,11 +3946,12 @@
                 var MonthsResult = document.getElementById("MonthsResult");
                 MonthsResult.textContent = document.querySelector('.show-result').textContent
                 popup.style.display = "none";
-               
+
             }, 1000);
 
             // Temp Code
         });
+        
         function getResult() {
             result = getFormAndFilteredFormData();
             formData = result.formData;
@@ -3921,6 +3959,31 @@
 
             // Convert the formData object to a query string
             var queryString = $.param(filteredFormData);
+                // Parse the query string into an object
+            var urlParams = new URLSearchParams(queryString);
+
+            // Define the allowed parameters
+            var allowedParams = ['from', 'to', 'dateFrom', 'dateTo'];
+
+            // Filter the parameters to keep only the desired ones
+            var filteredParams = new URLSearchParams();
+            allowedParams.forEach(function(param) {
+                if (urlParams.has(param)) {
+                    filteredParams.append(param, urlParams.get(param));
+                }
+            });
+
+            // Serialize the filtered parameters into a new query string
+            var filteredQueryString = filteredParams.toString();
+
+            // Get the current URL without the query string
+            var baseUrl = window.location.href.split('?')[0];
+
+            // Create the new URL by appending the filtered query string
+            var newUrl = baseUrl + '?' + filteredQueryString;
+
+            // Change the URL without redirecting or reloading the page
+            history.pushState(null, '', newUrl);
             // Make an AJAX request to submit the form data
             $.ajax({
                 type: "GET",
