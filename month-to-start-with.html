@@ -47,178 +47,6 @@
     </div>
 </header>
 
-
-
-
-<!-- <nav class="navbar yamm navbar-default " style="background:#fff" role="navigation" id="BigNav">
-
-    <div class="container header">
-
-        <div class="navbar-header">
-            <style>
-                .hc-nav-trigger.hc-nav-1 {
-                    display: block;
-                    right: 20px;
-                    top: 13px;
-                }
-            </style>
-            <div class="visible-xs">
-                <nav id="main-nav" style="display: none;">
-
-
-                    <ul class="">
-                        <li class="first"><a href="/">Home</a></li>
-                        <li class="active"><a href="no.html">Flights</a></li>
-                        <li>
-                            <a href="#" title="Hotels">Hotels</a>
-                            <ul class="">
-                                <li data-nav-custom-content>
-                                    <div><a href="no/" style="color: #FFF;" title="Hotels"><strong>Hotels
-                                                Homepage</strong></a></div>
-                                </li>
-                                <li class="first"><a href="no/great.html">great</a></li>
-                            </ul>
-                        </li>
-                        <li class="last"><a href="maybe.html">Packages</a></li>
-                    </ul>
-
-
-                </nav>
-            </div>
-
-            <a href="https://www.bigsavetravel.co.uk" title="homepage"
-                class="navbar-brand visible-xs"><strong>BIGSAVETRAVEL</strong></a>
-        </div>
-
-        <div id="navBar" class="navbar-collapse collapse">
-
-
-
-            <style>
-                .hc-offcanvas-nav.nav-levels-overlap .nav-content {
-                    background: red !important;
-                }
-
-                .hc-offcanvas-nav .nav-container,
-                .hc-offcanvas-nav .nav-wrapper,
-                .hc-offcanvas-nav ul {
-                    background: red !important;
-                }
-
-                .dropdown-submenu {
-                    position: relative;
-                }
-
-                .dropdown-submenu>.dropdown-menu {
-                    top: 0;
-                    left: 100%;
-                    margin-top: -6px;
-                    margin-left: -1px;
-                    -webkit-border-radius: 0 6px 6px 6px;
-                    -moz-border-radius: 0 6px 6px;
-                    border-radius: 0 6px 6px 6px;
-                }
-
-                .dropdown-submenu:hover>.dropdown-menu {
-                    display: block;
-                }
-
-                .dropdown-submenu>a:after {
-                    display: block;
-                    content: " ";
-                    float: right;
-                    width: 0;
-                    height: 0;
-                    border-color: transparent;
-                    border-style: solid;
-                    border-width: 5px 0 5px 5px;
-                    border-left-color: #ccc;
-                    margin-top: 5px;
-                    margin-right: -10px;
-                }
-
-                .dropdown-submenu.submenu3>a:after,
-                .dropdown-submenu.parent2>a:after {
-                    display: none;
-                }
-
-                .dropdown-submenu:hover>a:after {
-                    border-left-color: #fff;
-                }
-
-                .dropdown-submenu.pull-left {
-                    float: none;
-                }
-
-                .dropdown-submenu.pull-left>.dropdown-menu {
-                    left: -100%;
-                    margin-left: 10px;
-                    -webkit-border-radius: 6px 0 6px 6px;
-                    -moz-border-radius: 6px 0 6px 6px;
-                    border-radius: 6px 0 6px 6px;
-                }
-
-                ul.nav .dropdown-menu .dropdown-menu {
-                    /*margin-left: 15px;*/
-                    margin-right: 15px;
-                    width: 100%;
-                    word-wrap: initial;
-                    /*display: inline-block;*/
-                }
-
-                .dropdown-menu>li>a {
-                    white-space: normal;
-                    border-bottom: 1px solid #f1f1f1;
-                }
-
-                @media only screen and (max-width: 767px) {
-
-                    .navbar-nav>.open>a,
-                    .navbar-nav>.open>a:focus,
-                    .navbar-nav>.open>a:hover {
-                        color: #FFF !important;
-                    }
-
-
-                }
-            </style>
-
-
-            <ul class="nav navbar-nav hidden-xs">
-                <li class="first">
-                    <a href="/" title="Home">Home
-                    </a>
-
-                </li>
-                <li class="active">
-                    <a href="no.html" title="Flights">Flights
-                    </a>
-
-                </li>
-                <li class=" dropdown">
-                    <a href="no/" title="Hotels" class="dropdown-toggle" data-toggle="dropdown">Hotels <b
-                            class="caret"></b>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="no/" title="Hotels"><strong>Hotels Homepage</strong></a>
-                        </li>
-                        <li class=" dropdown submenu2 parent2">
-                            <a href="no/great.html">great</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="last">
-                    <a href="maybe.html" title="Packages">Packages
-                    </a>
-
-                </li>
-            </ul>
-
-
-        </div>
-    </div>
-</nav> -->
 <style>
     .navbar-nav>li>.dropdown-menu {
         width: 200px;
@@ -599,6 +427,8 @@
         .show-popup {
             width: 100% !important;
             float: auto;
+            margin: 5px 15px;
+            padding: 0 !important;
         }
 
         .subscribe-popup {
@@ -1259,7 +1089,27 @@
         color: white;
 
     }
-        /* phone */
+    .input-box{
+        background:#DFDFDF; 
+        height:80px; 
+        text-align:left;
+        padding-top:7px
+    }
+    .month-box{
+        background:#DFDFDF; 
+        height:80px; 
+        text-align:left;
+        padding-top:7px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .show-popup{
+        float:left;
+        width:30%;
+        padding:2px;
+    }
+    /* phone */
     @media only screen and (max-width: 508px) {
         .popup {
             width: 100%;
@@ -1270,7 +1120,28 @@
             width: 100% !important;
             height: 100% !important;
         }
-
+        .title,.label-div{
+            display: none;
+        }
+        .input-box{
+            background-color: transparent;
+            height: auto !important;
+        }
+        .month-box{
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 7px;
+            background-color: white;
+            height: auto !important;
+            border: 1px solid #49505799;
+            color: #495057c7;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 400;
+        }
+        .month-box p{
+            margin: 0;
+        }
     }
 
     .LoadMoreDiv {
@@ -1315,9 +1186,9 @@
         padding: 5px 10px;
     }
 
-    .col-md-4 {
+    /* .col-md-4 {
         height: 120px;
-    }
+    } */
 
     #dropdownContainer .select2-container .select2-selection--multiple {
         min-height: 50px;
@@ -1334,22 +1205,27 @@
         <!--<div style="float:left;width:35%;padding:2px;">-->
 
         <div class="col-md-4">
-            <div style="font-size:13px;text-align:center">Destinations</div>
-            <div style="background:#DFDFDF; height:80px; text-align:left;padding-top:7px"><label for="toAirport"
-                    placeholder="Add Destination first">Where to?: </label><i
-                    class="fas fa-plane-arrival"></i><br /><select id="toAirport" class="form-control initial-select"
-                    multiple="multiple" style="width: 100%;" placeholder="+ Add another">
+            <div class="title" style="font-size:13px;text-align:center">Destinations</div>
+            <div class="input-box" >
+                <div class="label-div">
+                    <label for="toAirport" placeholder="Add Destination first">Where to?: </label><i
+                        class="fas fa-plane-arrival"></i>
+                </div>
+                <select id="toAirport" class="form-control initial-select" multiple="multiple" style="width: 100%;"
+                    placeholder="Add Destination first">
 
                 </select>
-
-                </select> </div>
+            </div>
 
             <!--dropdown of Destinations groups-->
         </div>
         <div class="col-md-4">
-            <div style="font-size:13px;text-align:center">Departures</div>
-            <div style="background:#DFDFDF; height:80px; text-align:left;padding-top:7px"><label for="fromAirport"
-                    placeholder="Add Departure first">Where from?:</label> <i class="fas fa-plane-departure"></i><br />
+            <div class="title" style="font-size:13px;text-align:center">Departures</div>
+            <div class="input-box">
+                <div class="label-div">
+                    <label for="fromAirport" placeholder="Add Departure first">Where from?:</label>
+                    <i class="fas fa-plane-departure"></i>
+                </div>
                 <select id="fromAirport" class="form-control" multiple="multiple" style="width: 100%;"></select>
             </div>
 
@@ -1368,19 +1244,19 @@
                     class="applySelect">Apply</button>
             </div>
         </div>
-        <div style="float:left;width:30%;padding:2px;" class="show-popup">
-            <div style="font-size:13px;text-align:center">Dates</div>
-            <div style="background:#DFDFDF; height:80px; text-align:left;padding-top:7px">
+        <div  class="show-popup">
+            <div class="title" style="font-size:13px;text-align:center">Dates</div>
+            <div class="month-box">
                 <p style="text-align: center;"> Which Month? : <span id="MonthsResult">___-__-__ to ____-__-__</span>
                 </p>
-                <center><i style="font-size:20px" class="fas fa-caret-down"></i></center>
+                <i style="font-size:20px" class="fas fa-caret-down"></i>
             </div>
             <!--dropdown of months-->
         </div>
     </div>
     <div class="row">
         <div class="col-md-3 form-group">
-            <label for="airline">Airline:</label>
+            <label for="airline" class="title">Airline:</label>
             <div class="position-relative">
                 <!-- Create a multi-search dropdown -->
                 <select id="airline" class="form-control" style="width: 100%;">
@@ -1390,17 +1266,16 @@
         </div>
 
         <div class="col-md-3  form-group">
-            <label for="stops">Stops:</label>
+            <label for="stops" class="title">Stops:</label>
             <div class="position-relative">
                 <select id="stops" class="form-control" style="width: 100%;">
 
                 </select>
-                <i class="fas fa-stop date-picker-icon"></i>
             </div>
         </div>
 
         <div class="col-md-3  form-group">
-            <label for="cabins">Cabin:</label>
+            <label for="cabins" class="title">Cabin:</label>
             <div class="position-relative">
                 <select id="cabins" class="form-control" style="width: 100%;">
 
@@ -1410,8 +1285,8 @@
 
         <div style="display: none;" class="col-md-3 form-group">
             <div class="position-relative mt-5">
+                <label for="shortStays" class="title">Short Stays</label>
                 <input type="checkbox" id="shortStays" disabled>
-                <label for="shortStays">Short Stays</label>
             </div>
         </div>
     </div>
@@ -2054,6 +1929,7 @@
         var deals;
 
         $('#fromAirport').select2({
+            placeholder: 'Add destination first',
             dropdownParent: $('#dropdownContainer')
         });
 
@@ -2062,16 +1938,31 @@
         });
 
         // Initialize Select2
-        $('#days').select2();
+        $('#days').select2({
+            placeholder: 'Any Days',
+        }
+        );
 
         // Initialize Select2
-        $('#stops').select2();
+        $('#stops').select2(
+            {
+                placeholder: 'Any Stops',
+            }
+        );
 
         // Initialize Select2
-        $('#cabins').select2();
+        $('#cabins').select2(
+            {
+                placeholder: 'Any Cabin',
+            }
+        );
 
         // Initialize Select2
-        $('#airline').select2();
+        $('#airline').select2(
+            {
+                placeholder: 'Any Airline',
+            }
+        );
 
         // Check if there are parameters in the URL
         if (window.location.search.length > 0) {
@@ -2231,8 +2122,8 @@
         }
         function getDeparatureCities(toAirport) {
             var apiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? 'http://localhost:5016/api/GoogleWorldwide/GetFromAirports'
-                : 'http://localhost:5016/api/GoogleWorldwide/GetFromAirportsByToAirports?toAirports=' + toAirport;
+                ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetFromAirports'
+                : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetFromAirportsByToAirports?toAirports=' + toAirport;
             $.ajax({
                 url: apiUrl,
                 method: 'GET',
@@ -2245,8 +2136,8 @@
         function populateToChange(selectedToAirport) {
             // Make an API request to fetch data based on the selected "To" airport
             var apiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? 'http://localhost:5016/api/GoogleWorldwide/GetFromAirports'
-                : 'http://localhost:5016/api/GoogleWorldwide/GetFromAirportsByToAirports?toAirports=' + selectedToAirport;
+                ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetFromAirports'
+                : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetFromAirportsByToAirports?toAirports=' + selectedToAirport;
 
             var daysApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
                 ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllDays'
@@ -2383,8 +2274,8 @@
                 : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllCabinsByToAndFromAirports?toAirports=' + dest + '&fromAirports=' + dep;
 
             var airlinesApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllAirlines'
-                : 'http://localhost:5016/api/GoogleWorldwide/GetAllAirlinesByToAndFromAirports?toAirports=' + dest + '&fromAirports=' + dep;
+                ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllAirlines'
+                : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllAirlinesByToAndFromAirports?toAirports=' + dest + '&fromAirports=' + dep;
 
             // Make another API request to fetch days data
             $.ajax({
@@ -3169,6 +3060,7 @@
 
             // Initialize select2
             $('#toAirport').select2({
+                placeholder: "Any destination",
                 dropdownParent: $('#dropdownContainer'),
                 templateResult: formatOption,
                 templateSelection: formatSelection,
@@ -3768,6 +3660,7 @@
 
                 selectElement.append(option);
                 $('#fromAirport').select2({
+                    placeholder: "Any departure",
                     dropdownParent: $('#dropdownContainer'),
                     templateResult: formatOption,
                     templateSelection: formatSelection
@@ -4065,7 +3958,7 @@
             // Make an AJAX request to submit the form data
             $.ajax({
                 type: "GET",
-                url: "http://localhost:5016/api/GoogleWorldwide/GetGFAirlineRecords?" + queryString,
+                url: "https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetGFAirlineRecords?" + queryString,
                 contentType: "application/json",
                 data: JSON.stringify(formData),
                 success: function (response) {
