@@ -786,7 +786,7 @@
     }
 
     .popup,
-    #selectPopup,
+    .selectPopup,
     .subscribe-popup {
 
         display: none;
@@ -810,7 +810,7 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     }
 
-    #selectPopup {
+    .selectPopup {
         padding-top: 30px;
         flex-direction: column;
         height: 600px;
@@ -882,35 +882,35 @@
         border-color: #14b0f7;
     }
 
-    #dropdownContainer {
+    .dropdownContainer {
         width: 100%;
         height: 80%;
         margin-top: 5px;
     }
 
-    #dropdownContainer .select2-container--open .select2-dropdown--below,
-    #dropdownContainer .select2-results {
+    .dropdownContainer .select2-container--open .select2-dropdown--below,
+    .dropdownContainer .select2-results {
         border: none !important;
         width: 100% !important;
         height: 100% !important;
     }
 
-    #dropdownContainer .select2-container--default .select2-results>.select2-results__options {
+    .dropdownContainer .select2-container--default .select2-results>.select2-results__options {
         max-height: 100% !important;
 
     }
 
-    #dropdownContainer .select2-results__option {
+    .dropdownContainer .select2-results__option {
         padding: 10px
     }
 
-    #dropdownContainer .select2-container--default .select2-results__option[aria-selected=true] {
+    .dropdownContainer .select2-container--default .select2-results__option[aria-selected=true] {
         background-color: #14b0f7;
         color: white;
     }
 
-    #dropdownContainer .select2-container,
-    #dropdownContainer .select2-dropdown {
+    .dropdownContainer .select2-container,
+    .dropdownContainer .select2-dropdown {
         position: relative !important;
         width: 100%;
         top: 0 !important;
@@ -1121,7 +1121,7 @@
             height: 100%;
         }
 
-        #selectPopup {
+        .selectPopup {
             width: 100% !important;
             height: 100% !important;
         }
@@ -1179,7 +1179,7 @@
         padding: 2px 5px;
     }
 
-    #dropdownContainer .select2-container--default .select2-selection--multiple .select2-selection__choice {
+    .dropdownContainer .select2-container--default .select2-selection--multiple .select2-selection__choice {
         background-color: rgb(200, 228, 255);
         display: flex;
         align-items: center;
@@ -1188,7 +1188,7 @@
 
     }
 
-    #dropdownContainer .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    .dropdownContainer .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
         font-size: 18px;
         color: white;
         background-color: rgb(109, 182, 255);
@@ -1200,11 +1200,11 @@
         height: 120px;
     } */
 
-    #dropdownContainer .select2-container .select2-selection--multiple {
+    .dropdownContainer .select2-container .select2-selection--multiple {
         min-height: 50px;
     }
 
-    #dropdownContainer .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+    .dropdownContainer .select2-container--default .select2-selection--multiple .select2-selection__rendered {
         display: flex;
         align-items: center;
     }
@@ -1233,26 +1233,42 @@
             <div class="title" style="font-size:13px;text-align:center">Departures</div>
             <div class="input-box">
                 <div class="label-div">
-                    <label for="fromAirport" placeholder="Add Departure first">Where from?:</label>
+                    <label for="popupFromAirport" placeholder="Add Departure first">Where from?:</label>
                     <i class="fas fa-plane-departure"></i>
                 </div>
-                <select id="fromAirport" class="form-control" multiple="multiple" style="width: 100%;"></select>
+                <select id="popupFromAirport" class="form-control" multiple="multiple" style="width: 100%;"></select>
             </div>
 
             <!--dropdown of Departures-->
         </div>
-
-        <div id="selectPopup">
-            <i class="fas fa-times close-select"
+        <!-- to airopot select popup -->
+        <div id="selectToPopup" class="selectPopup">
+            <i class="fas fa-times close-select" onclick="handlePopUp('selectToPopup')"
                 style="position: absolute; top: 0%;right: 0%;padding-right:10px;cursor: pointer; color: red; font-size: 26px;"></i>
             <select id="toAirport" class="form-control" multiple="multiple" style="width: 100%;">
             </select>
-            <div id="dropdownContainer">
+            <div id="toDropdownContainer" class="dropdownContainer">
             </div>
             <div class="submit selectSubmit">
-                <button style="background-color: white; color: black;" class="clearSelect">Clear</button>
+                <button style="background-color: white; color: black;" class="clearSelect toAirport"
+                    onclick="clearAllSelections('toAirport')">Clear</button>
                 <button style="background-color:greenyellow; color: white; border-color: greenyellow;"
-                    class="applySelect">Apply</button>
+                    class="applyToSelect">Apply</button>
+            </div>
+        </div>
+        <!-- from airopot select popup -->
+        <div id="selectFromPopup" class="selectPopup">
+            <i class="fas fa-times close-select" onclick="handlePopUp('selectFromPopup')"
+                style="position: absolute; top: 0%;right: 0%;padding-right:10px;cursor: pointer; color: red; font-size: 26px;"></i>
+            <select id="fromAirport" class="form-control" multiple="multiple"
+                style="width: 100%; display: none;"></select>
+            <div id="fromDropdownContainer" class="dropdownContainer">
+            </div>
+            <div class="submit selectSubmit">
+                <button style="background-color: white; color: black;" class="clearSelect"
+                    onclick="clearAllSelections('fromAirport')">Clear</button>
+                <button style="background-color:greenyellow; color: white; border-color: greenyellow;"
+                    class="applyFromSelect">Apply</button>
             </div>
         </div>
         <div class="show-popup">
@@ -1655,7 +1671,6 @@
 <!-- Initialize Bootstrap Multiselect with custom styling -->
 <script>
     let subscribed = true;
-    let toActivated = true;
     //************JS FOR POPUP STARTS***************************
     const initialData = [
         { to: 'Asia', city: '' },
@@ -1685,11 +1700,11 @@
     const showPopupDiv = document.querySelector(".show-popup");
     const close = document.querySelector(".close");
     const popup = document.getElementById("popup");
+    const applyToSelect = document.querySelector('.applyToSelect');
+    const applyFromSelect = document.querySelector('.applyFromSelect');
     //select popup
-    const selectPopup = document.getElementById("selectPopup");
-    const closeSelect = document.querySelector(".close-select");
-    const SelectSubmitBtn = document.querySelector('.applySelect');
-    const CancleSubmitBtn = document.querySelector('.clearSelect');
+    const selectFromPopup = document.getElementById("selectFromPopup");
+    const selectToPopup = document.getElementById("selectToPopup");
     //subscribe popup
     const subscribePopup = document.getElementById("subscribe-popup");
     const closeSubscribe = document.querySelector(".close-subscribe");
@@ -1697,14 +1712,41 @@
     const handlePopUp = (id) => {
         const popup = document.getElementById(id);
         if (popup.style.display === "flex") {
+            console.log("closing");
             popup.style.display = "none";
         } else {
             popup.style.display = "flex";
         }
     }
+    //handle clear buttons
+    function clearAllSelections(selectId) {
+        console.log(selectId);
+        // Clear the selection in Select2
+        $('#' + selectId).val(null).trigger('change');
+
+        // Manually trigger unselect event for each previously selected option
+        $('#' + selectId + ' option').each(function () {
+            var $option = $(this);
+            if ($option.data('selected')) {
+                $option.data('selected', false);
+                var data = $option.data();
+                $('#' + selectId).trigger({
+                    type: 'select2:unselect',
+                    params: {
+                        data: data
+                    }
+                });
+            }
+        });
+        // Make sure all checkboxes are unchecked and aria-selected is false
+        var $select2Results = $('#' + selectId).data('select2').$results;
+        $select2Results.find('li[role="option"]').each(function () {
+            $(this).attr('aria-selected', 'false');
+            $(this).find('input[type="checkbox"]').prop('checked', false);
+        });
+    }
     showPopupDiv.addEventListener("click", () => handlePopUp("popup"));
     close.addEventListener("click", () => handlePopUp("popup"));
-    closeSelect.addEventListener("click", () => handlePopUp("selectPopup"));
     closeSubscribe.addEventListener("click", () => handlePopUp("subscribe-popup"));
 
     //handle month selection
@@ -1941,15 +1983,17 @@
 
         $('#fromAirport').select2({
             placeholder: 'Add destination first',
-            dropdownParent: $('#dropdownContainer')
+            dropdownParent: $('#fromDropdownContainer')
         });
-
+        $('#popupFromAirport').select2({
+            placeholder: 'Add destination first',
+        });
         $('#popupToAirport').select2({
             placeholder: 'Any Destination',
         });
         // Initialize popup select
         $('#toAirport').select2({
-            dropdownParent: $('#dropdownContainer'),
+            dropdownParent: $('#toDropdownContainer'),
             placeholder: 'Search destinations'
         });
 
@@ -2054,52 +2098,23 @@
                 filteredFormData: filteredFormData
             };
         }
-        //handle clear buttons
-        function clearAllSelections(selectId) {
-            // Clear the selection in Select2
-            $('#' + selectId).val(null).trigger('change');
-
-            // Manually trigger unselect event for each previously selected option
-            $('#' + selectId + ' option').each(function () {
-                var $option = $(this);
-                if ($option.data('selected')) {
-                    $option.data('selected', false);
-                    var data = $option.data();
-                    $('#' + selectId).trigger({
-                        type: 'select2:unselect',
-                        params: {
-                            data: data
-                        }
-                    });
-                }
-            });
-            // Make sure all checkboxes are unchecked and aria-selected is false
-            var $select2Results = $('#' + selectId).data('select2').$results;
-            $select2Results.find('li[role="option"]').each(function () {
-                $(this).attr('aria-selected', 'false');
-                $(this).find('input[type="checkbox"]').prop('checked', false);
-            });
-        }
-        CancleSubmitBtn.addEventListener('click', function () {
-            if (toActivated) {
-                clearAllSelections('toAirport');
-            } else {
-                clearAllSelections('fromAirport');
-
-            }
-        });
         $('#popupToAirport').on('select2:opening', function (e) {
             e.preventDefault();
-            handlePopUp("selectPopup");
+            handlePopUp("selectToPopup");
             $('#toAirport').select2('open');
             $('#toAirport').val($(this).val()).trigger('change');
         });
- 
+        $('#popupFromAirport').on('select2:opening', function (e) {
+            e.preventDefault();
+            $('#fromAirport').select2('open');
+            $('#fromAirport').val($(this).val()).trigger('change');
+        });
+        applyToSelect.addEventListener('click', ()=>handleToAirportChange());
         function handleToAirportChange() {
             return new Promise((resolve) => {
                 // Event handler for the change event of the "To" dropdown
 
-                handlePopUp("selectPopup");
+                handlePopUp("selectToPopup");
                 $('#toAirport').select2('close');
                 // Get the selected value to the "To" dropdown
                 var selectedToAirport = $('#toAirport').val();
@@ -2183,7 +2198,6 @@
                 url: apiUrl,
                 method: 'GET',
                 success: function (data) {
-                    console.log(data);
                     // Assuming 'data' is the array of objects you provided
                     // Remove existing options
                     $('#fromAirport').empty();
@@ -3085,7 +3099,7 @@
             // Initialize select2
             $('#toAirport').select2({
                 placeholder: "Any destination",
-                dropdownParent: $('#dropdownContainer'),
+                dropdownParent: $('#toDropdownContainer'),
                 templateResult: formatOption,
                 templateSelection: formatSelection,
 
@@ -3098,7 +3112,6 @@
 
             // Event listener for typing into select2 input
             $('#toAirport').on('select2:open', function () {
-                toActivated = true;
                 //show select popup
                 // handlePopUp("selectPopup")
                 // Event listener for typing into select2 input
@@ -3119,7 +3132,7 @@
                                 populateDropdown(data);
                                 // Update select2
                                 $('#toAirport').select2({
-                                    dropdownParent: $('#dropdownContainer'),
+                                    dropdownParent: $('#toDropdownContainer'),
                                     templateResult: formatOption,
                                     templateSelection: formatSelection
                                 }
@@ -3154,13 +3167,6 @@
                     }
                 });
             });
-            if (isFirstTyping) {
-                //bindOtherDDLs().then(handleToAirportChange);
-                SelectSubmitBtn.addEventListener('click', function () {
-                    if (!toActivated) return
-                    handleToAirportChange();
-                });
-            }
         }
 
         function fetchData(url) {
@@ -3176,19 +3182,20 @@
 
         // Function to handle the "To" dropdown change event
         $('#fromAirport').on('select2:open', function () {
-            toActivated = false;
-            handlePopUp("selectPopup")
+            handlePopUp("selectFromPopup")
         });
+        applyFromSelect.addEventListener('click', handleFromAirportChange);
         function handleFromAirportChange() {
 
-            handlePopUp("selectPopup");
+            handlePopUp("selectFromPopup");
             $("#hdnDestinationGroup").val('');
             $("#hdnDestinationTo").val('');
             // current page to 1
             currentPage = 1;
             // Get the selected value to the "From" dropdown
-            var selectedFromAirport = $(this).val();
-
+            var selectedFromAirport = $('#fromAirport').val();
+            //append selected value to pop up from Airport
+            $("#popupFromAirport").val(selectedFromAirport).trigger('change');
             var selectedToAirport = $("#toAirport").val();
 
             if (selectedFromAirport == 'Everywhere') {
@@ -3281,9 +3288,7 @@
                 resolve();
             }
         }
-        $('#fromAirport').on('change', function () {
-            SelectSubmitBtn.addEventListener('click', handleFromAirportChange);
-        });
+
 
         // Function to populate the dropdown with data
         function populateDropdown(data) {
@@ -3340,7 +3345,6 @@
             $('#toAirport').val($(this).val()).trigger('change');
         });
         $('#toAirport').on('select2:select select2:unselect', function (e) {
-            console.log("unselect", e);
             var element = e.params.data.element;
             var $element = $(element);
             // Toggle the checkbox state based on selection
@@ -3357,7 +3361,7 @@
 
         });
         $('#toAirport').on('select2:closing', function (event) {
-            if (selectPopup.style.display === 'flex') {
+            if (selectToPopup.style.display === 'flex') {
                 event.preventDefault();
             }
         });
@@ -3378,7 +3382,7 @@
             $option.find('input[type="checkbox"]').prop('checked', $element.data('selected'));
         });
         $('#fromAirport').on('select2:closing', function (event) {
-            if (selectPopup.style.display === 'flex') {
+            if (selectFromPopup.style.display === 'flex') {
                 event.preventDefault();
             }
         });
@@ -3667,8 +3671,9 @@
 
         function populateFromDropdown(data) {
             // Get the select element by its ID
-            var selectElement = $('#fromAirport');
-
+            var fromAirport = $('#fromAirport');
+            var toAiroport = $('#toAirport');
+            var fromAirportPopup = $('#popupFromAirport');
             // Loop through the data and append options to the select element
             data.forEach(function (airport) {
 
@@ -3688,14 +3693,20 @@
                     option.prop('disabled', true);
                 }
 
-                selectElement.append(option);
-                $('#fromAirport').select2({
+                fromAirport.append(option);
+                fromAirportPopup.append(option.clone());
+                $('#popupFromAirport').select2({
                     placeholder: "Any departure",
-                    dropdownParent: $('#dropdownContainer'),
+                }
+                );
+                $('#fromAirport').select2({
+                    placeholder: "Search departure",
+                    dropdownParent: $('#fromDropdownContainer'),
                     templateResult: formatOption,
                     templateSelection: formatSelection
                 }
                 );
+
             });
             // Assuming the URL parameter is 'from=abc,def'
             const urlParams = new URLSearchParams(window.location.search);
@@ -3930,6 +3941,7 @@
                     // get the years
                     var startDate = new Date(yearStart, monthToInt(firstMonth), 1);
                     var endDate = new Date(yearEnd, monthToInt(secondMonth) + 1, 0);
+                    
 
                     startDateString = startDate.getFullYear() + '-' + pad((startDate.getMonth() + 1), 2) + '-' + pad(startDate.getDate(), 2);
                     endDateString = endDate.getFullYear() + '-' + pad((endDate.getMonth() + 1), 2) + '-' + pad(endDate.getDate(), 2);
