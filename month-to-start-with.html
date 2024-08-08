@@ -813,7 +813,7 @@
     #selectPopup {
         padding-top: 30px;
         flex-direction: column;
-        height: 500px;
+        height: 600px;
     }
 
     .subscribe-popup {
@@ -884,7 +884,8 @@
 
     #dropdownContainer {
         width: 100%;
-        height: 85%;
+        height: 80%;
+        margin-top: 5px;
     }
 
     #dropdownContainer .select2-container--open .select2-dropdown--below,
@@ -1089,26 +1090,30 @@
         color: white;
 
     }
-    .input-box{
-        background:#DFDFDF; 
-        height:80px; 
-        text-align:left;
-        padding-top:7px
+
+    .input-box {
+        background: #DFDFDF;
+        height: 80px;
+        text-align: left;
+        padding-top: 7px
     }
-    .month-box{
-        background:#DFDFDF; 
-        height:80px; 
-        text-align:left;
-        padding-top:7px;
+
+    .month-box {
+        background: #DFDFDF;
+        height: 80px;
+        text-align: left;
+        padding-top: 7px;
         display: flex;
         flex-direction: column;
         align-items: center;
     }
-    .show-popup{
-        float:left;
-        width:30%;
-        padding:2px;
+
+    .show-popup {
+        float: left;
+        width: 30%;
+        padding: 2px;
     }
+
     /* phone */
     @media only screen and (max-width: 508px) {
         .popup {
@@ -1120,14 +1125,18 @@
             width: 100% !important;
             height: 100% !important;
         }
-        .title,.label-div{
+
+        .title,
+        .label-div {
             display: none;
         }
-        .input-box{
+
+        .input-box {
             background-color: transparent;
             height: auto !important;
         }
-        .month-box{
+
+        .month-box {
             flex-direction: row;
             justify-content: space-between;
             padding: 7px;
@@ -1139,7 +1148,8 @@
             font-size: 14px;
             font-weight: 400;
         }
-        .month-box p{
+
+        .month-box p {
             margin: 0;
         }
     }
@@ -1206,12 +1216,12 @@
 
         <div class="col-md-4">
             <div class="title" style="font-size:13px;text-align:center">Destinations</div>
-            <div class="input-box" >
+            <div class="input-box">
                 <div class="label-div">
                     <label for="toAirport" placeholder="Add Destination first">Where to?: </label><i
                         class="fas fa-plane-arrival"></i>
                 </div>
-                <select id="toAirport" class="form-control initial-select" multiple="multiple" style="width: 100%;"
+                <select id="popupToAirport" class="form-control initial-select" multiple="multiple" style="width: 100%;"
                     placeholder="Add Destination first">
 
                 </select>
@@ -1235,8 +1245,9 @@
         <div id="selectPopup">
             <i class="fas fa-times close-select"
                 style="position: absolute; top: 0%;right: 0%;padding-right:10px;cursor: pointer; color: red; font-size: 26px;"></i>
+            <select id="toAirport" class="form-control" multiple="multiple" style="width: 100%;">
+            </select>
             <div id="dropdownContainer">
-
             </div>
             <div class="submit selectSubmit">
                 <button style="background-color: white; color: black;" class="clearSelect">Clear</button>
@@ -1244,7 +1255,7 @@
                     class="applySelect">Apply</button>
             </div>
         </div>
-        <div  class="show-popup">
+        <div class="show-popup">
             <div class="title" style="font-size:13px;text-align:center">Dates</div>
             <div class="month-box">
                 <p style="text-align: center;"> Which Month? : <span id="MonthsResult">___-__-__ to ____-__-__</span>
@@ -1656,9 +1667,9 @@
         { to: 'Europe', city: '' },
         { to: 'India', city: '' },
         { to: 'Indian Ocean', city: '' },
-        { to: 'Middleeast', city: '' },
+        { to: 'Middle East', city: '' },
         { to: 'New Zealand', city: '' },
-        { to: 'Southamerica', city: '' }
+        { to: 'South America', city: '' }
         // Add more static records as needed
     ];
     let selectedChoice = 1;
@@ -1933,8 +1944,13 @@
             dropdownParent: $('#dropdownContainer')
         });
 
+        $('#popupToAirport').select2({
+            placeholder: 'Any Destination',
+        });
+        // Initialize popup select
         $('#toAirport').select2({
-            dropdownParent: $('#dropdownContainer')
+            dropdownParent: $('#dropdownContainer'),
+            placeholder: 'Search destinations'
         });
 
         // Initialize Select2
@@ -2072,7 +2088,13 @@
 
             }
         });
-
+        $('#popupToAirport').on('select2:opening', function (e) {
+            e.preventDefault();
+            handlePopUp("selectPopup");
+            $('#toAirport').select2('open');
+            $('#toAirport').val($(this).val()).trigger('change');
+        });
+ 
         function handleToAirportChange() {
             return new Promise((resolve) => {
                 // Event handler for the change event of the "To" dropdown
@@ -2082,6 +2104,8 @@
                 // Get the selected value to the "To" dropdown
                 var selectedToAirport = $('#toAirport').val();
 
+                //append values to popupToAirport select
+                $('#popupToAirport').val(selectedToAirport).trigger('change');
                 // Clear the options in the "From" dropdown using Select2, haven't used trigger event here bcz if we use then it will trigger fromAirport change event and the load ddls from db endpoints call twice
                 $('#fromAirport').empty();
 
@@ -3076,7 +3100,7 @@
             $('#toAirport').on('select2:open', function () {
                 toActivated = true;
                 //show select popup
-                handlePopUp("selectPopup")
+                // handlePopUp("selectPopup")
                 // Event listener for typing into select2 input
                 $('#toAirport').siblings('.select2').find('.select2-search__field').on('input', function () {
 
@@ -3263,9 +3287,10 @@
 
         // Function to populate the dropdown with data
         function populateDropdown(data) {
-            var selectElement = $('#toAirport');
-
-            selectElement.empty();
+            var toAiroport = $('#toAirport');
+            var toAiroportPopup = $('#popupToAirport');
+            toAiroport.empty();
+            toAiroportPopup.empty();
 
             data.forEach(function (airport) {
                 var optionText = airport.to === 'Everywhere' ? airport.to : airport.city + ' (' + airport.to + ')';
@@ -3277,7 +3302,8 @@
                     text: optionText,
                     disabled: airport.isHeading === true
                 });
-                selectElement.append(option);
+                toAiroport.append(option);
+                toAiroportPopup.append(option.clone());
             });
 
 
@@ -3309,8 +3335,12 @@
                 event.stopPropagation();
             });
         }
+        $('#popupToAirport').on('select2:unselect', function (e) {
+            clearAllSelections('toAirport');
+            $('#toAirport').val($(this).val()).trigger('change');
+        });
         $('#toAirport').on('select2:select select2:unselect', function (e) {
-
+            console.log("unselect", e);
             var element = e.params.data.element;
             var $element = $(element);
             // Toggle the checkbox state based on selection
@@ -3852,7 +3882,7 @@
             // }
             // }
         })
-      
+
         applyDate.addEventListener('click', function () {
             const monthElements = document.querySelectorAll('.months .month li');
 
