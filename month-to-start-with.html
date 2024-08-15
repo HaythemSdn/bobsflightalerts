@@ -274,7 +274,6 @@
     }
 
     .airline-logo-box-f {
-        float: left;
         padding-top: 12px;
     }
 
@@ -1722,27 +1721,27 @@
     const closeSubscribe = document.querySelector(".close-subscribe");
     let EuropeCities = ["Europe"];
     function getEuropeCities() {
-    return $.ajax({
-        url: 'http://localhost:5016/api/Cheapest/GetCheapestPricesFromDepartureToSelectedGroupDomestic',
-        method: 'GET',
-        data: {
-            destination: 'Europe',
-            pageSize: 190
-        },
-        dataType: 'json'
-    })
-    .then(function(data) {
-        var deals = data.worldwideCheapestPricedRecords;
-        
-        deals.forEach(function(deal) {
-            EuropeCities.push(deal.to);
-        });
-        
-    })
-    .fail(function(jqXHR, textStatus, errorThrown) {
-        console.error('Failed to fetch Europe cities:', textStatus, errorThrown);
-        return null;
-    });
+        return $.ajax({
+            url: 'http://localhost:5016/api/Cheapest/GetCheapestPricesFromDepartureToSelectedGroupDomestic',
+            method: 'GET',
+            data: {
+                destination: 'Europe',
+                pageSize: 190
+            },
+            dataType: 'json'
+        })
+            .then(function (data) {
+                var deals = data.worldwideCheapestPricedRecords;
+
+                deals.forEach(function (deal) {
+                    EuropeCities.push(deal.to);
+                });
+
+            })
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                console.error('Failed to fetch Europe cities:', textStatus, errorThrown);
+                return null;
+            });
     }
     const handlePopUp = (id) => {
         const popup = document.getElementById(id);
@@ -1912,7 +1911,7 @@
                 var ShortStaysDiv = document.getElementById('2');
                 var Months = ShortStaysDiv.querySelector('.month');
                 var daysOfWeek = document.getElementById('days-of-week');
-                 applyDate.style.cursor = "not-allowed";
+                applyDate.style.cursor = "not-allowed";
                 if (daysOfWeek.value == "") {
                     Months.style.display = "none";
                 } else {
@@ -1956,9 +1955,9 @@
                         Months.style.display = "block";
                     }
                     if (Months.style.display == "block") {
-                         applyDate.style.cursor = "pointer";
+                        applyDate.style.cursor = "pointer";
                     } else {
-                         applyDate.style.cursor = "not-allowed";
+                        applyDate.style.cursor = "not-allowed";
                     }
                 });
                 //handle Custom Range
@@ -2071,6 +2070,12 @@
             var toDate;
             var dateTabOption;
             var daysOfWeek = null;
+            const today = new Date();
+            const tomorrow = (new Date(today));
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const defaultFromDate = tomorrow.toISOString().slice(0, 10);
+            const defaultToDate = new Date(today.getFullYear() + 1, 11, 31).toISOString().slice(0, 10);
+
             // var noDatesChecked = $("#noDates").prop('checked');
             // var radioBetween = $('#isBetween').prop('checked');
             // var radioGreater = $('#greaterThanA').prop('checked');
@@ -2098,8 +2103,8 @@
             var formData = {
                 from: from,
                 to: to,
-                dateFrom: fromDate ? fromDate : '2024-09-01',
-                dateTo: toDate ? toDate : '2025-06-30',
+                dateFrom: fromDate ? fromDate : defaultFromDate,
+                dateTo: toDate ? toDate : defaultToDate,
                 isTargetOnly: false,
                 // selectedStops: $("#stops").val(),
                 // selectedDays: 14,
@@ -2151,10 +2156,10 @@
                 $('#toAirport').select2('close');
                 // Get the selected value to the "To" dropdown
                 var selectedToAirport = $('#toAirport').val();
-                if (EuropeCities.some(r=> selectedToAirport.includes(r))) {
+                if (EuropeCities.some(r => selectedToAirport.includes(r))) {
 
-                     $('#ShortStaysTab').show();               
-                }else{
+                    $('#ShortStaysTab').show();
+                } else {
                     $('#ShortStaysTab').hide();
                     MonthsTab.click();
                 }
@@ -2752,7 +2757,7 @@
                 if (isCard) {
                     $(".card-deals-container").empty(); // for pagination, need to remove prev page records
                     // Loop through each deal and generate HTML content
-                    deals.forEach(function (deal) {
+                    deals.forEach(async function (deal) {
                         const oldePrice = parseFloat(deal.olde_price);
                         const newPrice = parseFloat(deal.new_price);
                         const difference = parseFloat(deal.difference);
@@ -2809,8 +2814,9 @@
                             // show sort by ddl
                             $("#ddlSortByDiv").css("display", "block");
                             //get To city
-                            var toCity = $("#toAirport").select2('data')[0].text;
-                            var fromCity = $("#fromAirport").select2('data')[0].text;
+                            var toCity = deal.citys + ' (' + deal.to + ')';
+                            var fromCity = await getCityFromCode(deal.from) + ' (' + deal.from + ')';
+                            console.log(deal);
 
                             // Load More button not needed in this case
                             $('#loadMoreBtn').hide();
@@ -2822,21 +2828,20 @@
                                           <div class="plane-logo-f"><i class="fa fa-plane"></i></div>
                                           <div class="arrive-to-f"><b>${toCity}</b></div>
                                       </div>
-                                      <div style="clear: both;"></div>
-                                      <div style="width:67%;float:left">
-                                          <div class="depart-date-f"><i class="fa fa-calendar"></i> ${formatDate(deal.dates)}</div>
-                                          <div class="side-border" style="padding-right: 17px;"></div>
-                                          <div class="depart-date-f"><i class="fa fa-clock"></i> ${deal.days} </div>
-                                          <div style="clear: both;"></div>
-                                          <div class="airline-logo-box-f"><img src="data:image/jpeg;base64,${deal.photo}" class="airline-img-res-f" /></div>
-                                          <div style="float:left;"> <div class="round-trip-f"> Roundtrip <span class="stops">${formateStops(deal.stops)} </span> <br />${deal.cabin} </div> </div>
-                                          <div style="clear: both;"></div>
-
-                                          <div style="float:left; font-size:12px">uploaded: ${calculateTimeAgo(deal.newUploadDate)}</div>
-                                          <div><input type="button" class="btn-f btn-primary-f flight-button-f" value="Details" onclick="window.open('${deal.web}', '_blank')" /></div>
-                                          <div style="clear: both;"></div>
+                                    <div style="width: 100%;display:flex">
+                                      <div style="width:67%; display:flex">
+                                          <div class="airline-logo-box-f"  style="width: 50%">
+                                                <div class="depart-date-f"><i class="fa fa-calendar"></i> ${formatDate(deal.dates)}</div>
+                                                <div class="depart-date-f"><i class="fa fa-clock"></i> ${deal.days} </div>
+                                                <img src="data:image/jpeg;base64,${deal.photo}" class="airline-img-res-f" />
+                                                <div style="font-size:12px">uploaded: ${calculateTimeAgo(deal.newUploadDate)}</div>
+                                          </div>
+                                          <div>
+                                            <div style=""> <div class="round-trip-f"> Roundtrip <span class="stops">${formateStops(deal.stops)} </span> <br />${deal.cabin} </div> </div> 
+                                            <div><input type="button" class="btn-f btn-primary-f flight-button-f" value="Details" onclick="window.open('${deal.web}', '_blank')" /></div>
+                                          </div>  
                                       </div>
-                                      <div style="width:33%;float:right;border: 1px solid gray;text-align:center">
+                                      <div style="width:33%;border: 1px solid gray;text-align:center">
                                           <div><b><span style="font-size:12px">Was  </span><span style="text-decoration: line-through;font-size:17px">&pound;${deal.olde_price}</span></b></div>
                                           
                                           <div style="color: ${textColor};font-size:17px"><span style="font-size:12px">${textDiff}  <b>${deal.difference === 0 ? '' : '<i  style="font-size:12px" class="fas fa-arrow-' + (deal.difference < 0 ? 'down' : 'up') + '"></i>' + deal.difference}</b>  </span>
@@ -2844,7 +2849,7 @@
                                             </div>
                                           <div style="font-size:22px"><span style="font-size:12px">New  </span><b>&pound;${deal.new_price}</b></div>
                                       </div>
-                                  </div>
+                                    </div>
                                           `;
 
                             // Append the generated HTML to the container
@@ -4001,6 +4006,8 @@
                     document.querySelector('.show-result').textContent = startDateString + " to " + endDateString;
                 } else {
                     document.querySelector('.show-result').textContent = "____-__-__ to ____-__-__";
+                    startDateString=null;
+                    endDateString=null;
                 }
             }
 
@@ -4026,17 +4033,12 @@
             // Parse the query string into an object
             var urlParams = new URLSearchParams(queryString);
 
-            // Define the allowed parameters
-            // var allowedParams = ['from', 'to', 'dateFrom', 'dateTo'];
-
             // Filter the parameters to keep only the desired ones
             var filteredParams = new URLSearchParams();
-            // allowedParams.forEach(function (param) {
-            //     if (urlParams.has(param)) {
-            //         filteredParams.append(param, urlParams.get(param));
-            //     }
-            // });
-            
+
+            $('#pagination').twbsPagination('destroy');
+            $('#pagination').remove();
+            $('#pag').html('<div id="pagination"></div>');
             //filter urlparams to keep just non empty and non false values
             urlParams.forEach((value, key) => {
                 if (value && value !== 'false') {
@@ -4112,7 +4114,7 @@
     }
 
 
-    
+
     function toggleInputBVisibility() {
         var radio1 = document.getElementById("isBetween");
         var radio2 = document.getElementById("greaterThanA");
