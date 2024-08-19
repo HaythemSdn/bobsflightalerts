@@ -1251,7 +1251,7 @@
         </div>
         <!-- to airopot select popup -->
         <div id="selectToPopup" class="selectPopup">
-            <i class="fas fa-times close-select" onclick="handlePopUp('selectToPopup')"
+            <i class="fas fa-times close-select" onclick="handlePopUp('selectToPopup','f')"
                 style="position: absolute; top: 0%;right: 0%;padding-right:10px;cursor: pointer; color: red; font-size: 26px;"></i>
             <select id="toAirport" class="form-control" multiple="multiple" style="width: 100%;">
             </select>
@@ -1266,7 +1266,7 @@
         </div>
         <!-- from airopot select popup -->
         <div id="selectFromPopup" class="selectPopup">
-            <i class="fas fa-times close-select" onclick="handlePopUp('selectFromPopup')"
+            <i class="fas fa-times close-select" onclick="handlePopUp('selectFromPopup','f')"
                 style="position: absolute; top: 0%;right: 0%;padding-right:10px;cursor: pointer; color: red; font-size: 26px;"></i>
             <select id="fromAirport" class="form-control" multiple="multiple"
                 style="width: 100%; display: none;"></select>
@@ -1713,6 +1713,9 @@
     const popup = document.getElementById("popup");
     const applyToSelect = document.querySelector('.applyToSelect');
     const applyFromSelect = document.querySelector('.applyFromSelect');
+    const showResult = document.querySelector('.show-result');
+    var MonthsResult = document.getElementById("MonthsResult");
+
     //select popup
     const selectFromPopup = document.getElementById("selectFromPopup");
     const selectToPopup = document.getElementById("selectToPopup");
@@ -1743,11 +1746,12 @@
                 return null;
             });
     }
-    const handlePopUp = (id) => {
+    const handlePopUp = (id, action) => {
         const popup = document.getElementById(id);
-        if (popup.style.display === "flex") {
+        if (action == "f") {
             popup.style.display = "none";
-        } else {
+        }
+        if (action == "o") {
             popup.style.display = "flex";
         }
     }
@@ -1777,9 +1781,9 @@
             $(this).find('input[type="checkbox"]').prop('checked', false);
         });
     }
-    showPopupDiv.addEventListener("click", () => handlePopUp("popup"));
-    close.addEventListener("click", () => handlePopUp("popup"));
-    closeSubscribe.addEventListener("click", () => handlePopUp("subscribe-popup"));
+    showPopupDiv.addEventListener("click", () => handlePopUp("popup", "o"));
+    close.addEventListener("click", () => handlePopUp("popup", "f"));
+    closeSubscribe.addEventListener("click", () => handlePopUp("subscribe-popup", "f"));
 
     //handle month selection
     let selectedMonths = [];
@@ -1806,7 +1810,7 @@
             m.classList.remove('starting-month', 'ending-month', 'between-month');
         });
         updateSelectedMonths();
-        document.querySelector('.show-result').textContent = "____-__-__ to ____-__-__";
+        showResult.textContent = "____-__-__ to ____-__-__";
     }
     const handleMonths = (month) => {
         let startIndex, endIndex;
@@ -1966,7 +1970,7 @@
                 }, function (start, end, label) {
                     startDateString = start.format('YYYY-MM-DD');
                     endDateString = end.format('YYYY-MM-DD');
-                    document.querySelector('.show-result').textContent = start.format('YYYY-MM-DD') + " to " + end.format('YYYY-MM-DD');
+                    showResult.textContent = start.format('YYYY-MM-DD') + " to " + end.format('YYYY-MM-DD');
                 });
 
             }
@@ -1990,7 +1994,6 @@
     $(document).ready(function () {
         var currentPage = 1;
         var firstCall = true; // On Page load, we can set it true
-
 
         // Function to show the spinner
         function showSpinner() {
@@ -2057,7 +2060,8 @@
         );
 
         // Check if there are parameters in the URL
-        if (window.location.search.length > 0) {
+        if (window.location.search.length > 0 && $('#toAirport').val().length == 0) {
+            console.log('URL has parameters');
             assignFieldsFromUrl();
         }
         else {
@@ -2066,8 +2070,6 @@
             getCheapestPricesOnTheBasisOfToDDLFixedValues();
         }
         function getFormAndFilteredFormData() {
-            var fromDate;
-            var toDate;
             var dateTabOption;
             var daysOfWeek = null;
             const today = new Date();
@@ -2080,14 +2082,13 @@
             // var radioBetween = $('#isBetween').prop('checked');
             // var radioGreater = $('#greaterThanA').prop('checked');
             // var radioLess = $('#greaterThanB').prop('checked');
-            var fromArray = $("#fromAirport").val();
+            var fromArray = $("#popupFromAirport").val();
             // Convert the array of strings to a comma-separated string
             var from = fromArray.join(',');
-            var toArray = $("#toAirport").val();
+            var toArray = $("#popupToAirport").val();
             // Convert the array of strings to a comma-separated string
             var to = toArray.join(',');
-            fromDate = startDateString;
-            toDate = endDateString;
+
             if (selectedChoice == 1) {
 
                 dateTabOption = 'Month';
@@ -2103,15 +2104,15 @@
             var formData = {
                 from: from,
                 to: to,
-                dateFrom: fromDate ? fromDate : defaultFromDate,
-                dateTo: toDate ? toDate : defaultToDate,
-                isTargetOnly: false,
+                dateFrom: startDateString ? startDateString : defaultFromDate,
+                dateTo: endDateString ? endDateString : defaultToDate,
+                // isTargetOnly: false,
                 // selectedStops: $("#stops").val(),
                 // selectedDays: 14,
                 // selectedCabin: $("#cabins").val(),
                 airline: $("#airline").val(),
                 // aircode: $("#aircode").val(),
-                shortStays: dateTabOption == 'Short',
+                // shortStays: dateTabOption == 'Short',
                 // radioBetween: false,
                 // radioGreater: false,
                 // radioLess: false,
@@ -2125,20 +2126,25 @@
 
             // Filter out null or empty values
             var filteredFormData = {};
+            var urlFormData = {};
             Object.keys(formData).forEach(function (key) {
                 var value = formData[key];
                 if (value !== null && value !== undefined && value !== '') {
                     filteredFormData[key] = value;
+                    if(value!=defaultFromDate && value!=defaultToDate){
+                        urlFormData[key] = value;
+                    }
                 }
             });
             return {
                 formData: formData,
-                filteredFormData: filteredFormData
+                filteredFormData: filteredFormData,
+                urlFormData: urlFormData
             };
         }
         $('#popupToAirport').on('select2:opening', function (e) {
             e.preventDefault();
-            handlePopUp("selectToPopup");
+            handlePopUp("selectToPopup", "o");
             $('#toAirport').select2('open');
             $('#toAirport').val($(this).val()).trigger('change');
         });
@@ -2147,17 +2153,21 @@
             $('#fromAirport').select2('open');
             $('#fromAirport').val($(this).val()).trigger('change');
         });
-        applyToSelect.addEventListener('click', () => handleToAirportChange());
+        applyToSelect.addEventListener('click', async() => {
+           await handleToAirportChange();
+           updateUrl();
+        
+        
+        });
         function handleToAirportChange() {
-            return new Promise((resolve) => {
+            // return new Promise((resolve) => {
                 // Event handler for the change event of the "To" dropdown
 
-                handlePopUp("selectToPopup");
+                handlePopUp("selectToPopup", "f");
                 $('#toAirport').select2('close');
                 // Get the selected value to the "To" dropdown
                 var selectedToAirport = $('#toAirport').val();
                 if (EuropeCities.some(r => selectedToAirport.includes(r))) {
-
                     $('#ShortStaysTab').show();
                 } else {
                     $('#ShortStaysTab').hide();
@@ -2169,7 +2179,6 @@
                 $('#fromAirport').empty();
 
                 emptyDropdowns();
-
                 // Check if selectedToAirport is not empty
                 if (selectedToAirport.length > 0) {
                     populateToChange(selectedToAirport)
@@ -2200,19 +2209,19 @@
                 } else {
                     getDeparatureCities(selectedToAirport);
                 }
-            });
+            // });
 
         }
         function getDeparatureCities(toAirport) {
             var apiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? ' http://localhost:5016/api/GoogleWorldwide/GetFromAirports'
+                ? 'http://localhost:5016/api/GoogleWorldwide/GetFromAirports'
                 : 'http://localhost:5016/api/GoogleWorldwide/GetFromAirportsByToAirports?toAirports=' + toAirport;
             $.ajax({
                 url: apiUrl,
                 method: 'GET',
                 success: function (data) {
                     populateCardOrTable(data, true, false);
-                    populateFromDropdown(data);
+                    // populateFromDropdown(data);
                 }
             });
         }
@@ -2220,24 +2229,24 @@
         function populateToChange(selectedToAirport) {
             // Make an API request to fetch data based on the selected "To" airport
             var apiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? ' http://localhost:5016/api/GoogleWorldwide/GetFromAirports'
-                : ' http://localhost:5016/api/GoogleWorldwide/GetFromAirportsByToAirports?toAirports=' + selectedToAirport;
+                ? 'http://localhost:5016/api/GoogleWorldwide/GetFromAirports'
+                : 'http://localhost:5016/api/GoogleWorldwide/GetFromAirportsByToAirports?toAirports=' + selectedToAirport;
 
             var daysApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? ' http://localhost:5016/api/GoogleWorldwide/GetAllDays'
-                : ' http://localhost:5016/api/GoogleWorldwide/GetAllDaysByToAndFromAirports?toAirports=' + selectedToAirport;
+                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllDays'
+                : 'http://localhost:5016/api/GoogleWorldwide/GetAllDaysByToAndFromAirports?toAirports=' + selectedToAirport;
 
             var stopsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? ' http://localhost:5016/api/GoogleWorldwide/GetAllStops'
-                : ' http://localhost:5016/api/GoogleWorldwide/GetAllStopsByToAndFromAirports?toAirports=' + selectedToAirport;
+                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllStops'
+                : 'http://localhost:5016/api/GoogleWorldwide/GetAllStopsByToAndFromAirports?toAirports=' + selectedToAirport;
 
             var cabinsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? ' http://localhost:5016/api/GoogleWorldwide/GetAllCabins'
-                : ' http://localhost:5016/api/GoogleWorldwide/GetAllCabinsByToAndFromAirports?toAirports=' + selectedToAirport;
+                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllCabins'
+                : 'http://localhost:5016/api/GoogleWorldwide/GetAllCabinsByToAndFromAirports?toAirports=' + selectedToAirport;
 
             var airlinesApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? ' http://localhost:5016/api/GoogleWorldwide/GetAllAirlines'
-                : ' http://localhost:5016/api/GoogleWorldwide/GetAllAirlinesByToAndFromAirports?toAirports=' + selectedToAirport;
+                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllAirlines'
+                : 'http://localhost:5016/api/GoogleWorldwide/GetAllAirlinesByToAndFromAirports?toAirports=' + selectedToAirport;
 
             $.ajax({
                 url: apiUrl,
@@ -2256,20 +2265,20 @@
                     // i.e. on page load we have 'from ddl' is selected as well, then search based on both from and to
                     if (selectedFromAirport.length > 0) {
                         daysApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                            ? ' http://localhost:5016/api/GoogleWorldwide/GetAllDays'
-                            : ' http://localhost:5016/api/GoogleWorldwide/GetAllDaysByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
+                            ? 'http://localhost:5016/api/GoogleWorldwide/GetAllDays'
+                            : 'http://localhost:5016/api/GoogleWorldwide/GetAllDaysByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
 
                         stopsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                            ? ' http://localhost:5016/api/GoogleWorldwide/GetAllStops'
-                            : ' http://localhost:5016/api/GoogleWorldwide/GetAllStopsByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
+                            ? 'http://localhost:5016/api/GoogleWorldwide/GetAllStops'
+                            : 'http://localhost:5016/api/GoogleWorldwide/GetAllStopsByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
 
                         cabinsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                            ? ' http://localhost:5016/api/GoogleWorldwide/GetAllCabins'
-                            : ' http://localhost:5016/api/GoogleWorldwide/GetAllCabinsByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
+                            ? 'http://localhost:5016/api/GoogleWorldwide/GetAllCabins'
+                            : 'http://localhost:5016/api/GoogleWorldwide/GetAllCabinsByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
 
                         airlinesApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                            ? ' http://localhost:5016/api/GoogleWorldwide/GetAllAirlines'
-                            : ' http://localhost:5016/api/GoogleWorldwide/GetAllAirlinesByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
+                            ? 'http://localhost:5016/api/GoogleWorldwide/GetAllAirlines'
+                            : 'http://localhost:5016/api/GoogleWorldwide/GetAllAirlinesByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
                     }
                     // Make another API request to fetch days data
                     $.ajax({
@@ -2278,7 +2287,6 @@
                         success: function (daysData) {
                             // Populate the "days" dropdown with the retrieved data
                             populateOtherDropdowns(daysData, "#days");
-
                             // Make another API request to fetch stops data
                             $.ajax({
                                 url: stopsApiUrl,
@@ -2303,33 +2311,36 @@
                                                     // Populate the "airlines" dropdown with the retrieved data
                                                     populateOtherDropdowns(airlinesData, "#airline");
                                                     // Resolve the promise to signal completion
-                                                    // resolve();
+                                                    // if (window.location.search.length > 0 && $('#toAirport').val().length == 0) {
+                                                    //     resolve();
+                                                    // }
+
                                                 },
                                                 error: function (error) {
                                                     console.error('Error fetching airlines data from the API:', error);
                                                     // Resolve the promise even if there's an error to ensure the chain continues
-                                                    // resolve();
+                                                    resolve();
                                                 }
                                             });
                                         },
                                         error: function (error) {
                                             console.error('Error fetching cabins data from the API:', error);
                                             // Resolve the promise even if there's an error to ensure the chain continues
-                                            // resolve();
+                                            resolve();
                                         }
                                     });
                                 },
                                 error: function (error) {
                                     console.error('Error fetching stops data from the API:', error);
                                     // Resolve the promise even if there's an error to ensure the chain continues
-                                    // resolve();
+                                    resolve();
                                 }
                             });
                         },
                         error: function (error) {
                             console.error('Error fetching days data from the API:', error);
                             // Resolve the promise even if there's an error to ensure the chain continues
-                            // resolve();
+                            resolve();
                         }
                     });
 
@@ -2344,21 +2355,20 @@
         function loadAirlines(dest, dep) {
             $("#popupFromAirport").val(dep).trigger("change");
             $("#fromAirport").val(dep).trigger("change.select2");
-
             var daysApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? ' http://localhost:5016/api/GoogleWorldwide/GetAllDays'
-                : ' http://localhost:5016/api/GoogleWorldwide/GetAllDaysByToAndFromAirports?toAirports=' + dest + '&fromAirports=' + dep;
+                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllDays'
+                : 'http://localhost:5016/api/GoogleWorldwide/GetAllDaysByToAndFromAirports?toAirports=' + dest + '&fromAirports=' + dep;
 
             var stopsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? ' http://localhost:5016/api/GoogleWorldwide/GetAllStops'
-                : ' http://localhost:5016/api/GoogleWorldwide/GetAllStopsByToAndFromAirports?toAirports=' + dest + '&fromAirports=' + dep;
+                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllStops'
+                : 'http://localhost:5016/api/GoogleWorldwide/GetAllStopsByToAndFromAirports?toAirports=' + dest + '&fromAirports=' + dep;
 
             var cabinsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? ' http://localhost:5016/api/GoogleWorldwide/GetAllCabins'
-                : ' http://localhost:5016/api/GoogleWorldwide/GetAllCabinsByToAndFromAirports?toAirports=' + dest + '&fromAirports=' + dep;
+                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllCabins'
+                : 'http://localhost:5016/api/GoogleWorldwide/GetAllCabinsByToAndFromAirports?toAirports=' + dest + '&fromAirports=' + dep;
 
             var airlinesApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? ' http://localhost:5016/api/GoogleWorldwide/GetAllAirlines'
+                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllAirlines'
                 : 'http://localhost:5016/api/GoogleWorldwide/GetAllAirlinesByToAndFromAirports?toAirports=' + dest + '&fromAirports=' + dep;
 
             // Make another API request to fetch days data
@@ -2433,13 +2443,19 @@
 
             // Make an AJAX request to submit the form data
             $.ajax({
-                url: " http://localhost:5016/api/Cheapest/GetCheapestPricesForGroups?groupNames=" + commaSeparatedString + "&dateFrom=" + dates.fromDate + "&dateTo=" + dates.toDate + "&page=" + page + "&pageSize=" + pageSize,
+                url: "http://localhost:5016/api/Cheapest/GetCheapestPricesForGroups?groupNames=" + commaSeparatedString + "&dateFrom=" + dates.fromDate + "&dateTo=" + dates.toDate + "&page=" + page + "&pageSize=" + pageSize,
                 method: 'GET',
                 success: function (response) {
                     // Handle the successful response
                     // Assuming response is an array of deals
                     deals = response.cheapestPricedRecords;
 
+                    const NewDeals = Object.values(deals.reduce((acc, current) => {
+                    if (!acc[current.group]) {
+                        acc[current.group] = current;
+                    }
+                    return acc;
+                    }, {}));
                     // Show or hide "Load More" button based on total pages
                     if (currentPage < response.totalPages) {
                         $('#loadMoreBtn').show();
@@ -2450,7 +2466,7 @@
 
                     let isCard = true;
                     //populatingCardOrTable
-                    populateCardOrTable(deals, isCard, false);
+                    populateCardOrTable(NewDeals, isCard, false);
                 },
                 error: function (error) {
                     // Handle the error response
@@ -2480,10 +2496,8 @@
             // Assign the formatted date range to the monthpicker
             $('#monthpicker').val(monthPickerDatesInnerVar);
         }
-        // Assuming the form has an ID of 'flightSearchForm'
-        const flightSearchForm = $('#flightSearchForm');
 
-        function assignFieldsFromUrl() {
+        async function assignFieldsFromUrl() {
             // Get the URL parameters
             // const urlParams = new URLSearchParams(window.location.search);
             // const dateFromParam = urlParams.get('dateFrom');
@@ -2507,48 +2521,48 @@
                 }
             }
 
-            setInputValue('aircode', 'aircode');
-            setInputValue('inputA', 'minPrice');
-            setInputValue('inputB', 'maxPrice');
+            // setInputValue('aircode', 'aircode');
+            // setInputValue('inputA', 'minPrice');
+            // setInputValue('inputB', 'maxPrice');
 
-            // Handle checkbox for short stays
-            const shortStays = urlParams.get('shortStays');
-            if (shortStays === 'true') {
-                $('#shortStays').prop('checked', true);
-            }
+            // // Handle checkbox for short stays
+            // const shortStays = urlParams.get('shortStays');
+            // if (shortStays === 'true') {
+            //     $('#shortStays').prop('checked', true);
+            // }
 
-            // Handle checkbox for short stays
-            const isTarget = urlParams.get('isTargetOnly');
-            if (isTarget === 'true') {
-                $('#isTarget').prop('checked', true);
-            }
+            // // Handle checkbox for short stays
+            // const isTarget = urlParams.get('isTargetOnly');
+            // if (isTarget === 'true') {
+            //     $('#isTarget').prop('checked', true);
+            // }
 
-            // Handle radioBetween for short stays
-            const radioBetween = urlParams.get('radioBetween');
-            if (radioBetween === 'true') {
-                $('#isBetween').prop('checked', true);
-                toggleInputBVisibility();
-            }
+            // // Handle radioBetween for short stays
+            // const radioBetween = urlParams.get('radioBetween');
+            // if (radioBetween === 'true') {
+            //     $('#isBetween').prop('checked', true);
+            //     toggleInputBVisibility();
+            // }
 
-            // Handle radioGreater for short stays
-            const radioGreater = urlParams.get('radioGreater');
-            if (radioGreater === 'true') {
-                $('#greaterThanA').prop('checked', true);
-                toggleInputBVisibility();
-            }
+            // // Handle radioGreater for short stays
+            // const radioGreater = urlParams.get('radioGreater');
+            // if (radioGreater === 'true') {
+            //     $('#greaterThanA').prop('checked', true);
+            //     toggleInputBVisibility();
+            // }
 
-            // Handle radioLess for short stays
-            const radioLess = urlParams.get('radioLess');
-            if (radioLess === 'true') {
-                $('#greaterThanB').prop('checked', true);
-                toggleInputBVisibility();
-            }
+            // // Handle radioLess for short stays
+            // const radioLess = urlParams.get('radioLess');
+            // if (radioLess === 'true') {
+            //     $('#greaterThanB').prop('checked', true);
+            //     toggleInputBVisibility();
+            // }
 
-            // Handle checkboxes for green and red diff
-            const greenDiff = urlParams.get('greenDiff');
-            const redDiff = urlParams.get('redDiff');
-            $('#greenDiff').prop('checked', greenDiff === 'true');
-            $('#redDiff').prop('checked', redDiff === 'true');
+            // // Handle checkboxes for green and red diff
+            // const greenDiff = urlParams.get('greenDiff');
+            // const redDiff = urlParams.get('redDiff');
+            // $('#greenDiff').prop('checked', greenDiff === 'true');
+            // $('#redDiff').prop('checked', redDiff === 'true');
 
             //Handle Date Range picker
             const dateFromParam = urlParams.get('dateFrom');
@@ -2562,9 +2576,10 @@
 
                 const fromDate = decodeURIComponent(dateFromParam);
                 const toDate = decodeURIComponent(dateToParam);
+                assignDate(fromDate, toDate);
 
-                $('#dateRangePicker').val(fromDate);
-                $('#dateRangePicker2').val(toDate);
+                // $('#dateRangePicker').val(fromDate);
+                // $('#dateRangePicker2').val(toDate);
                 // $('#dateRangePicker').val(`${fromDate} - ${toDate}`);
                 // Initialize the daterangepicker with the selected date range (in calendar)
                 // $('#dateRangePicker').daterangepicker({
@@ -2573,78 +2588,58 @@
                 // });
 
                 // Check if either fromDate or toDate is '1997-01-01'
-                if (fromDate === '1997-01-01' || toDate === '1997-01-01') {
-                    // Uncheck and disable the short stays checkbox
-                    $('#shortStays').prop('disabled', true).prop('checked', false);
-                    // Check the 'No Dates' radio button
-                    $('#noDates').prop('checked', true);
-                    $('#dates').prop('checked', false);
-                } else {
-                    // on page load, if no dates is false, then just show the white date box
-                    $('#mergedDateField').show();
-                    // Enable the short stays checkbox
-                    $('#shortStays').prop('disabled', false);
-                    // Check the 'Dates' radio button
-                    $('#dates').prop('checked', true);
-                    $('#noDates').prop('checked', false);
-                    // display the sub tabs panel (Commented by Ali Haider as we dont need to display the dates tab on page load, we have added a box containing dates values)
-                    //$('#dates-tab').click();
-                    let datesTabLabel = 'Custom Range';
-                    const dateTabOption = urlParams.get('dateTabOption');
-                    if (dateTabOption == 'Short') {
-                        datesTabLabel = 'Short Stays';
-                        // Assuming you want to select the "Short Stays" tab
-                        $('#short-stays-tab').click();
-                    }
-                    else if (dateTabOption == 'Month') {
-                        datesTabLabel = 'Months';
-                        // Assuming you want to select the "Months" tab
-                        $('#months-tab').click();
-                        convertDateRangeToMonthPicker(`${fromDate} - ${toDate}`);
-                    }
-                    // As fromDate and toDates exist, and not 1997-01-01 so add it in "mergedDateField"
-                    // Concatenate values into desired format
-                    var customRange = datesTabLabel + ": " + fromDate + " to " + toDate;
-                    // Write result into mergedDateField
-                    $("#mergedDateField").val(customRange);
-                }
+                //     if (fromDate === '1997-01-01' || toDate === '1997-01-01') {
+                //         // Uncheck and disable the short stays checkbox
+                //         $('#shortStays').prop('disabled', true).prop('checked', false);
+                //         // Check the 'No Dates' radio button
+                //         $('#noDates').prop('checked', true);
+                //         $('#dates').prop('checked', false);
+                //     } else {
+                //         // on page load, if no dates is false, then just show the white date box
+                //         $('#mergedDateField').show();
+                //         // Enable the short stays checkbox
+                //         $('#shortStays').prop('disabled', false);
+                //         // Check the 'Dates' radio button
+                //         $('#dates').prop('checked', true);
+                //         $('#noDates').prop('checked', false);
+                //         // display the sub tabs panel (Commented by Ali Haider as we dont need to display the dates tab on page load, we have added a box containing dates values)
+                //         //$('#dates-tab').click();
+                //         let datesTabLabel = 'Custom Range';
+                //         const dateTabOption = urlParams.get('dateTabOption');
+                //         if (dateTabOption == 'Short') {
+                //             datesTabLabel = 'Short Stays';
+                //             // Assuming you want to select the "Short Stays" tab
+                //             $('#short-stays-tab').click();
+                //         }
+                //         else if (dateTabOption == 'Month') {
+                //             datesTabLabel = 'Months';
+                //             // Assuming you want to select the "Months" tab
+                //             $('#months-tab').click();
+                //             convertDateRangeToMonthPicker(`${fromDate} - ${toDate}`);
+                //         }
+                //         // As fromDate and toDates exist, and not 1997-01-01 so add it in "mergedDateField"
+                //         // Concatenate values into desired format
+                //         var customRange = datesTabLabel + ": " + fromDate + " to " + toDate;
+                //         // Write result into mergedDateField
+                //         $("#mergedDateField").val(customRange);
+                //     }
             }
-            const toParam = urlParams.get('to');
-            if (toParam) {
-                // Load To Airport Dropdown and Chain the Following Operations
-                bindToAirportDDLWhenParams().then(() => {
-                    // Trigger the change event asynchronously, it doesn't work without setTimeOut
-                    setTimeout(() => {
-                        $("#toAirport").trigger('change');
-                    }, 0);
-                })
-                    .then(handleToAirportChange) // in this function we are using promise, it will not return until promise resolves, and promise can only resolve under its onChange event and onChange event will only call if user triggers change, thats why I firstly used trigger change event and then calls this function handleToAirportChange, because if I write change event after that function, the change event never triggers because it wont move to next statement
-                    //.then(bindOtherDDLs)
-                    .then(submitForm)
-                    .catch(function (error) {
-                        console.error('An error occurred:', error);
-                    });
+            // Load To Airport Dropdown and Chain the Following Operations
+            try {
+                await bindToAirportDDLWhenParams();
+                await handleToAirportChange();
+                // Only submit the form after both async operations are complete
+                submitForm();
+            } catch (error) {
+                console.error("An error occurred:", error);
+                // Handle the error appropriately
             }
-            else {
-                // Load To Airport Dropdown and Chain the Following Operations
-                bindToAirportDDLWhenParams().then(() => {
-                    // Trigger the change event asynchronously, it doesn't work without setTimeOut
-                    setTimeout(() => {
-                        $("#toAirport").trigger('change');
-                    }, 0);
-                })
-                    .then(handleToAirportChange) // in this function we are using promise, it will not return until promise resolves, and promise can only resolve under its onChange event and onChange event will only call if user triggers change, thats why I firstly used trigger change event and then calls this function handleToAirportChange, because if I write change event after that function, the change event never triggers because it wont move to next statement
-                    //.then(bindOtherDDLs)
-                    .then(submitForm)
-                    .catch(function (error) {
-                        console.error('An error occurred:', error);
-                    });
-            }
+
         }
 
         function submitForm() {
             // Submit Form
-            $('#flightSearchForm').submit();
+            getResult();
         }
 
         // Add an event listener to the radio buttons
@@ -2690,35 +2685,35 @@
             }
         });
 
-        // Attach a click event to the button with id btnSubmit
-        $('#btnSubmit').on('click', function () {
-            //COMMENTED BY ALI HAIDER 2 March 2024 as we are adding apply and clear btns in calendar
-            // Check if the parent tab content is currently visible
-            // if ($('#parentTabContent').is(':visible')) {
-            // 	$('#noDates').prop('checked', false);
-            // 	$('#dates').prop('checked', true);
-            // } else {
-            // 	$('#noDates').prop('checked', true);
-            // 	$('#dates').prop('checked', false);
-            // }
+        // // Attach a click event to the button with id btnSubmit
+        // $('#btnSubmit').on('click', function () {
+        //     //COMMENTED BY ALI HAIDER 2 March 2024 as we are adding apply and clear btns in calendar
+        //     // Check if the parent tab content is currently visible
+        //     // if ($('#parentTabContent').is(':visible')) {
+        //     // 	$('#noDates').prop('checked', false);
+        //     // 	$('#dates').prop('checked', true);
+        //     // } else {
+        //     // 	$('#noDates').prop('checked', true);
+        //     // 	$('#dates').prop('checked', false);
+        //     // }
 
-            // Get Filtered Form Data
-            result = getFormAndFilteredFormData();
-            filteredFormData = result.filteredFormData
-            // Get the current URL
-            var currentUrl = window.location.href;
+        //     // Get Filtered Form Data
+        //     result = getFormAndFilteredFormData();
+        //     filteredFormData = result.filteredFormData
+        //     // Get the current URL
+        //     var currentUrl = window.location.href;
 
-            // Serialize the form data into a query string
-            var queryString = $.param(filteredFormData);
+        //     // Serialize the form data into a query string
+        //     var queryString = $.param(filteredFormData);
 
-            // Remove everything before "?"
-            var baseUrl = currentUrl.split('?')[0];
+        //     // Remove everything before "?"
+        //     var baseUrl = currentUrl.split('?')[0];
 
-            // Create the new URL by appending the query string
-            var newUrl = baseUrl + '?' + queryString;
-            // Redirect to the new URL
-            window.location.href = newUrl;
-        });
+        //     // Create the new URL by appending the query string
+        //     var newUrl = baseUrl + '?' + queryString;
+        //     // Redirect to the new URL
+        //     window.location.href = newUrl;
+        // });
 
 
 
@@ -2753,7 +2748,6 @@
                 container.empty();
             }
             if (deals.length > 0) {
-                // console.log("deals", deals[0]);
                 if (isCard) {
                     $(".card-deals-container").empty(); // for pagination, need to remove prev page records
                     // Loop through each deal and generate HTML content
@@ -2816,7 +2810,6 @@
                             //get To city
                             var toCity = deal.citys + ' (' + deal.to + ')';
                             var fromCity = await getCityFromCode(deal.from) + ' (' + deal.from + ')';
-                            console.log(deal);
 
                             // Load More button not needed in this case
                             $('#loadMoreBtn').hide();
@@ -2834,7 +2827,7 @@
                                                 <div class="depart-date-f"><i class="fa fa-calendar"></i> ${formatDate(deal.dates)}</div>
                                                 <div class="depart-date-f"><i class="fa fa-clock"></i> ${deal.days} </div>
                                                 <img src="data:image/jpeg;base64,${deal.photo}" class="airline-img-res-f" />
-                                                <div style="font-size:12px">uploaded: ${calculateTimeAgo(deal.newUploadDate)}</div>
+                                                <div style="font-size:12px; text-align:center">uploaded: <br> ${calculateTimeAgo(deal.newUploadDate)}</div>
                                           </div>
                                           <div>
                                             <div style=""> <div class="round-trip-f"> Roundtrip <span class="stops">${formateStops(deal.stops)} </span> <br />${deal.cabin} </div> </div> 
@@ -3107,7 +3100,7 @@
         }
         function bindOtherDDLs() {
             // Load Stops Dropdown
-            const stopsPromise = fetchData(' http://localhost:5016/api/GoogleWorldwide/GetAllStops')
+            const stopsPromise = fetchData('http://localhost:5016/api/GoogleWorldwide/GetAllStops')
                 .then(function (data) {
                     // Remove existing options
                     $('#stops').empty();
@@ -3115,14 +3108,14 @@
                 });
 
             // Load Days Dropdown
-            const daysPromise = fetchData(' http://localhost:5016/api/GoogleWorldwide/GetAllDays')
+            const daysPromise = fetchData('http://localhost:5016/api/GoogleWorldwide/GetAllDays')
                 .then(function (data) {
                     $('#days').empty();
                     populateOtherDropdowns(data, "#days");
                 });
 
             // Load Cabins Dropdown
-            const cabinsPromise = fetchData(' http://localhost:5016/api/GoogleWorldwide/GetAllCabins')
+            const cabinsPromise = fetchData('http://localhost:5016/api/GoogleWorldwide/GetAllCabins')
                 .then(function (data) {
                     $('#cabins').empty();
                     populateOtherDropdowns(data, "#cabins");
@@ -3133,10 +3126,19 @@
         }
 
         function bindToAirportDDLWhenParams() {
-            return fetchData(' http://localhost:5016/api/GoogleWorldwide/GetToAirports')
+            return fetchData('http://localhost:5016/api/GoogleWorldwide/GetToAirports')
                 .then(function (data) {
                     populateDropdown(data);
                 }).then(() => {
+                    // Initialize select2
+                    $('#toAirport').select2({
+                        placeholder: "Any destination",
+                        dropdownParent: $('#toDropdownContainer'),
+                        templateResult: formatOption,
+                        templateSelection: formatSelection,
+
+                    }
+                    );
                     // Assuming the URL parameter is 'to=abc,def'
                     const urlParams = new URLSearchParams(window.location.search);
                     const toValues = urlParams.get('to');
@@ -3154,7 +3156,7 @@
         function bindToAirportDDL() {
             // Fetch initial static records
             getEuropeCities();
-            fetchData(' http://localhost:5016/api/GoogleWorldwide/GetToAirports')
+            fetchData('http://localhost:5016/api/GoogleWorldwide/GetToAirports')
                 .then(function (data) {
                     populateDropdown(data);
                 })
@@ -3188,7 +3190,7 @@
                         // as its not ajax method as thats why need to show spinner manually
                         showSpinner();
                         // Fetch all records from the database
-                        fetchData(' http://localhost:5016/api/GoogleWorldwide/GetToAirports')
+                        fetchData('http://localhost:5016/api/GoogleWorldwide/GetToAirports')
                             .then(function (data) {
                                 // Remove existing options
                                 $('#toAirport').empty();
@@ -3246,14 +3248,20 @@
 
         // Function to handle the "To" dropdown change event
         $('#fromAirport').on('select2:open', function () {
-            handlePopUp("selectFromPopup")
+            handlePopUp("selectFromPopup", "o")
         });
-        applyFromSelect.addEventListener('click', handleFromAirportChange);
+
+
+
+        
+        applyFromSelect.addEventListener('click',async ()=>{
+            await handleFromAirportChange();
+            updateUrl();
+        });
         function handleFromAirportChange() {
 
-            handlePopUp("selectFromPopup");
-            $("#hdnDestinationGroup").val('');
-            $("#hdnDestinationTo").val('');
+            handlePopUp("selectFromPopup", "f");
+
             // current page to 1
             currentPage = 1;
             // Get the selected value to the "From" dropdown
@@ -3273,20 +3281,20 @@
             emptyDropdowns();
 
             var daysApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? ' http://localhost:5016/api/GoogleWorldwide/GetAllDays'
-                : ' http://localhost:5016/api/GoogleWorldwide/GetAllDaysByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
+                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllDays'
+                : 'http://localhost:5016/api/GoogleWorldwide/GetAllDaysByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
 
             var stopsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? ' http://localhost:5016/api/GoogleWorldwide/GetAllStops'
-                : ' http://localhost:5016/api/GoogleWorldwide/GetAllStopsByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
+                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllStops'
+                : 'http://localhost:5016/api/GoogleWorldwide/GetAllStopsByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
 
             var cabinsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? ' http://localhost:5016/api/GoogleWorldwide/GetAllCabins'
-                : ' http://localhost:5016/api/GoogleWorldwide/GetAllCabinsByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
+                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllCabins'
+                : 'http://localhost:5016/api/GoogleWorldwide/GetAllCabinsByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
 
             var airlinesApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? ' http://localhost:5016/api/GoogleWorldwide/GetAllAirlines'
-                : ' http://localhost:5016/api/GoogleWorldwide/GetAllAirlinesByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
+                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllAirlines'
+                : 'http://localhost:5016/api/GoogleWorldwide/GetAllAirlinesByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
 
             // Make another API request to fetch days data
             $.ajax({
@@ -3319,6 +3327,10 @@
                                         success: function (airlinesData) {
                                             // Populate the "airlines" dropdown with the retrieved data
                                             populateOtherDropdowns(airlinesData, "#airline");
+                                            if  ($("#ddlSortByDiv").css("display") === "none") {
+                                                airlinesData.shift();
+                                                populateCardOrTable(airlinesData, true, false);
+                                            }
                                         },
                                         error: function (error) {
                                             console.error('Error fetching airlines data from the API:', error);
@@ -3339,18 +3351,18 @@
                     console.error('Error fetching days data from the API:', error);
                 }
             });
-            if (selectedFromAirport.length > 0 && selectedToAirport.length == 0) {
+            // if (selectedFromAirport.length > 0 && selectedToAirport.length == 0) {
 
-                getCheapestPricesOnTheBasisOfFromSelectedDDLAndToDDLFixedValues();
-            }
-            else if (selectedToAirport.length > 0) {
-                getCheapestPricesOnTheBasisOfToSelectionChange()
-            }
-            else {
-                getCheapestPricesOnTheBasisOfToDDLFixedValues();
-                // Resolve the promise if selectedToAirport is empty to ensure the chain continues
-                resolve();
-            }
+            //     getCheapestPricesOnTheBasisOfFromSelectedDDLAndToDDLFixedValues();
+            // }
+            // else if (selectedToAirport.length > 0) {
+            //     getCheapestPricesOnTheBasisOfToSelectionChange()
+            // }
+            // else {
+            //     getCheapestPricesOnTheBasisOfToDDLFixedValues();
+            //     // Resolve the promise if selectedToAirport is empty to ensure the chain continues
+            //     resolve();
+            // }
         }
 
 
@@ -3502,7 +3514,7 @@
         // Attach click event handler using jQuery
         $(document).on('click', '.row-cheapest-cards', function () {
             if (!subscribed) {
-                handlePopUp("subscribe-popup");
+                handlePopUp("subscribe-popup", "o");
                 return;
             }
 
@@ -3518,11 +3530,13 @@
                     //airline
                     const airline = $(this).data('airline');
                     $('#airline').val(airline).trigger('change');
+                    updateUrl();
                     getResult();
                 } else {
                     emptyDropdowns();
                     const destination = $('#toAirport').val()[0];
                     loadAirlines(destination, deparature);
+                    updateUrl();
                 }
             } else {
                 emptyDropdowns();
@@ -3536,6 +3550,7 @@
                 if (group !== 'undefined') {
                     populateToChange(destination)
                 }
+                updateUrl();
             }
         });
 
@@ -3648,7 +3663,7 @@
             // let pageSize = 12;
             // // Make an AJAX request to submit the form data
             // $.ajax({
-            //     url: " http://localhost:5016/api/Cheapest/" + apiFunctionName + "?departure=" + departure + "&destination=" + destination + "&dateFrom=" + fromDate + "&dateTo=" + toDate + "&sortBy=" + sortBy + "&page=" + page + "&pageSize=" + pageSize,
+            //     url: "http://localhost:5016/api/Cheapest/" + apiFunctionName + "?departure=" + departure + "&destination=" + destination + "&dateFrom=" + fromDate + "&dateTo=" + toDate + "&sortBy=" + sortBy + "&page=" + page + "&pageSize=" + pageSize,
             //     method: 'GET',
             //     success: function (response) {
             //         // Handle the successful response
@@ -3682,6 +3697,24 @@
                 }
             });
         }
+        function updateUrl(){
+            //adding the structure as the processes moves along
+            result = getFormAndFilteredFormData();
+            UrlFormData = result.urlFormData;
+            var currentUrl = window.location.href;
+            // Serialize the form data into a query string
+            var queryString = $.param(UrlFormData);
+
+            // Remove everything before "?"
+            var baseUrl = currentUrl.split('?')[0];
+
+            // Create the new URL by appending the query string
+            var newUrl = baseUrl + '?' + queryString;
+            // Redirect to the new URL
+            if(Object.keys(UrlFormData).length >0){
+                window.history.replaceState(null, null, newUrl);
+            }
+        }
 
         function getCheapestPricesOnTheBasisOfFromSelectedDDLAndToDDLFixedValues() {
             let page = currentPage;
@@ -3701,7 +3734,7 @@
             }
             // Make an AJAX request to submit the form data
             $.ajax({
-                url: " http://localhost:5016/api/Cheapest/GetCheapestPricesFromDepartureToEachGroup?departure=" + fromdropdown + "&destinationGroupNames=" + commaSeparatedString + "&dateFrom=" + dates.fromDate + "&dateTo=" + dates.toDate + "&page=" + page + "&pageSize=" + pageSize,
+                url: "http://localhost:5016/api/Cheapest/GetCheapestPricesFromDepartureToEachGroup?departure=" + fromdropdown + "&destinationGroupNames=" + commaSeparatedString + "&dateFrom=" + dates.fromDate + "&dateTo=" + dates.toDate + "&page=" + page + "&pageSize=" + pageSize,
                 method: 'GET',
                 success: function (response) {
                     // Handle the successful response
@@ -3801,7 +3834,8 @@
                 // Split the values based on the comma
                 const valuesArray = fromValues.split(',');
                 // Use the val method from set the selected values
-                selectElement.val(valuesArray)
+                fromAirportPopup.val(valuesArray).trigger('change');
+                fromAirport.val(valuesArray);
             }
         }
 
@@ -3904,7 +3938,7 @@
 
         // bindToAirportDDL();
 
-        // return fetchData(' http://localhost:5016/api/Cheapest/GetFromAirports')
+        // return fetchData('http://localhost:5016/api/Cheapest/GetFromAirports')
         //     .then(function (data) {
         //         populateFromDropdown(data);
         //     }).then(() => {
@@ -3948,8 +3982,9 @@
         // }
 
         // handle apply Date button
-        applyFilters.addEventListener('click', () =>
-            getResult());
+        applyFilters.addEventListener('click', () => {
+            getResult();
+        });
 
         applyDate.addEventListener('click', function () {
             const monthElements = document.querySelectorAll('.months .month li');
@@ -3987,7 +4022,7 @@
                     startDateString = startDate.getFullYear() + '-' + pad((startDate.getMonth() + 1), 2) + '-' + pad(startDate.getDate(), 2);
                     endDateString = endDate.getFullYear() + '-' + pad((endDate.getMonth() + 1), 2) + '-' + pad(endDate.getDate(), 2);
 
-                    document.querySelector('.show-result').textContent = startDateString + " to " + endDateString;
+                    showResult.textContent = startDateString + " to " + endDateString;
                 } else if (selectedMonths.length == 2) {
                     var firstMonth = selectedMonths[0].textContent.toLowerCase();
                     var secondMonth = selectedMonths[1].textContent.toLowerCase();
@@ -4003,67 +4038,64 @@
                     startDateString = startDate.getFullYear() + '-' + pad((startDate.getMonth() + 1), 2) + '-' + pad(startDate.getDate(), 2);
                     endDateString = endDate.getFullYear() + '-' + pad((endDate.getMonth() + 1), 2) + '-' + pad(endDate.getDate(), 2);
 
-                    document.querySelector('.show-result').textContent = startDateString + " to " + endDateString;
+                    showResult.textContent = startDateString + " to " + endDateString;
                 } else {
-                    document.querySelector('.show-result').textContent = "____-__-__ to ____-__-__";
-                    startDateString=null;
-                    endDateString=null;
+                    showResult.textContent = "____-__-__ to ____-__-__";
+                    startDateString = null;
+                    endDateString = null;
                 }
+                updateUrl();
             }
 
             // Hide the popup after one second
             setTimeout(function () {
                 var popup = document.getElementById("popup");
-                var MonthsResult = document.getElementById("MonthsResult");
-                MonthsResult.textContent = document.querySelector('.show-result').textContent
+                MonthsResult.textContent = showResult.textContent
                 popup.style.display = "none";
 
             }, 1000);
 
             // Temp Code
         });
+        function assignDate(from, to) {
+            if (!from && !to) {
+                showResult.textContent = "____-__-__ to ____-__-__";
+                startDateString = null;
+                endDateString = null;
+            } else if (from && !to) {
+                showResult.textContent = from + " to ____-__-__";
+                startDateString = from;
+                endDateString = null;
+            } else if (!from && to) {
+                showResult.textContent = "____-__-__ to " + to;
+                startDateString = null;
+                endDateString = to;
+            } else {
+                showResult.textContent = from + " to " + to;
+                startDateString = from;
+                endDateString = to;
+            }
+            MonthsResult.textContent = showResult.textContent
 
+        }
         function getResult() {
             result = getFormAndFilteredFormData();
-            formData = result.formData;
+            // formData = result.formData;
             filteredFormData = result.filteredFormData
 
             // Convert the formData object to a query string
             var queryString = $.param(filteredFormData);
-            // Parse the query string into an object
-            var urlParams = new URLSearchParams(queryString);
 
-            // Filter the parameters to keep only the desired ones
-            var filteredParams = new URLSearchParams();
 
             $('#pagination').twbsPagination('destroy');
             $('#pagination').remove();
             $('#pag').html('<div id="pagination"></div>');
-            //filter urlparams to keep just non empty and non false values
-            urlParams.forEach((value, key) => {
-                if (value && value !== 'false') {
-                    filteredParams.append(key, value);
-                }
-            });
-
-            // Serialize the filtered parameters into a new query string
-            var filteredQueryString = filteredParams.toString();
-
-            // Get the current URL without the query string
-            var baseUrl = window.location.href.split('?')[0];
-
-            // Create the new URL by appending the filtered query string
-            var newUrl = baseUrl + '?' + filteredQueryString;
-
-            // Change the URL without redirecting or reloading the page
-            history.pushState(null, '', newUrl);
-            console.log(queryString);
             // Make an AJAX request to submit the form data
             $.ajax({
                 type: "GET",
                 url: "http://localhost:5016/api/GoogleWorldwide/GetGFAirlineRecords?" + queryString,
                 contentType: "application/json",
-                data: JSON.stringify(formData),
+                // data: JSON.stringify(formData),
                 success: function (response) {
                     // Handle the successful response
                     // Assuming response is an array of deals

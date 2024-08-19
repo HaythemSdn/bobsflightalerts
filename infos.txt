@@ -6,3 +6,7 @@ login bobs:
 https://www.bobsflightalerts.com:2083/ 
 thanksbob
 b0b5fligh7g@@d
+
+urls:
+https://api.schoolholidaydeals.co.uk
+http://localhost:5016
