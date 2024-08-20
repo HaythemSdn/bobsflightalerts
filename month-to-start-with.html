@@ -1216,6 +1216,19 @@
         display: flex;
         align-items: center;
     }
+
+    .grid-title {
+        padding: 10px;
+        margin: 0 -15px;
+        font-size: 20px;
+        border-bottom: 2px solid #0049a4;
+        text-transform: uppercase;
+        font-weight: bold;
+        color: #0049a4;
+        text-align: center;
+        background-color: white;
+
+    }
 </style>
 <br /><br />
 <div class="container" style="background:#eFeFeF;font-family: sans-serif;">
@@ -1327,10 +1340,13 @@
     </div>
     <div class="submit" style="margin-top: 0;">
         <button id="submit-filters"
-            style="background-color:#14b0f7; color: white; border-color: #14b0f7; ">Submit</button>
+            style="background-color:#0049a4; color: white; border-color: #0049a4; ">Submit</button>
         <button id="refresh"
             style="background-color:lightgreen; color: white; border-color: lightgreen; display: none;">refresh</button>
 
+    </div>
+    <div class="grid-title">
+        Destinations
     </div>
     <div class="my-deals-container">
         <!-- Card will be populated dynamically -->
@@ -1437,20 +1453,19 @@
                 <option value="2">2</option>
                 <option value="3">3</option>
                 <option value="4">4</option>
-                <option value="5">5</option>
             </select>
             <div style="width: 100%; display: none ;text-align: center;" class="show-days">
                 <h3>Which Nights ?</h3>
                 <select name="show-days" id="days-of-week"
                     style=" padding: 10px; border-radius: 8px; width: 75%;margin: 0 auto; background: white;">
                     <option value="">Please Select</option>
-                    <option value="Monday to Wednesday">Monday to Wednesday</option>
-                    <option value="Tuesday to Thursday">Tuesday to Thursday</option>
-                    <option value="Wednesday to Friday">Wednesday to Friday</option>
-                    <option value="Thursday to Saturday">Thursday to Saturday</option>
-                    <option value="Friday to Sunday">Friday to Sunday</option>
-                    <option value="Saturday to Monday">Saturday to Monday</option>
-                    <option value="Sunday to Tuesday">Sunday to Tuesday</option>
+                    <option value="1">Monday to Wednesday</option>
+                    <option value="2">Tuesday to Thursday</option>
+                    <option value="3">Wednesday to Friday</option>
+                    <option value="4">Thursday to Saturday</option>
+                    <option value="5">Friday to Sunday</option>
+                    <option value="6">Saturday to Monday</option>
+                    <option value="7">Sunday to Tuesday</option>
                 </select>
 
             </div>
@@ -1715,7 +1730,9 @@
     const applyFromSelect = document.querySelector('.applyFromSelect');
     const showResult = document.querySelector('.show-result');
     var MonthsResult = document.getElementById("MonthsResult");
+    var daysOfWeek = document.getElementById('days-of-week');
 
+    const gridTitle = document.querySelector('.grid-title');
     //select popup
     const selectFromPopup = document.getElementById("selectFromPopup");
     const selectToPopup = document.getElementById("selectToPopup");
@@ -1723,9 +1740,10 @@
     const subscribePopup = document.getElementById("subscribe-popup");
     const closeSubscribe = document.querySelector(".close-subscribe");
     let EuropeCities = ["Europe"];
+    let selectedDays = null;
     function getEuropeCities() {
         return $.ajax({
-            url: 'http://localhost:5016/api/Cheapest/GetCheapestPricesFromDepartureToSelectedGroupDomestic',
+            url: 'https://api.schoolholidaydeals.co.uk/api/Cheapest/GetCheapestPricesFromDepartureToSelectedGroupDomestic',
             method: 'GET',
             data: {
                 destination: 'Europe',
@@ -1903,18 +1921,12 @@
                     document.getElementById(i).style.display = "none";
                 }
             }
-            var dateTabOption;
-            if (index == 1) {
-                dateTabOption = 'Month';
-            }
             //handle short stays
             if (index == 2) {
-                dateTabOption = 'Short';
                 const showDays = document.querySelector('.show-days');
                 var Months = document.querySelector('.month');
                 var ShortStaysDiv = document.getElementById('2');
                 var Months = ShortStaysDiv.querySelector('.month');
-                var daysOfWeek = document.getElementById('days-of-week');
                 applyDate.style.cursor = "not-allowed";
                 if (daysOfWeek.value == "") {
                     Months.style.display = "none";
@@ -1922,6 +1934,7 @@
                     Months.style.display = "block";
                 }
                 const generateDaysOptions = (nights) => {
+                    selectedDays = nights;
                     if (nights === "") {
                         Months.style.display = "none";
                         showDays.style.display = "none";
@@ -1938,7 +1951,7 @@
                         const startDay = weekDays[i];
                         var index = (i + nights) % weekDays.length;
                         const endDay = weekDays[index];
-                        const option = new Option(`${startDay} to ${endDay}`, `${startDay} to ${endDay}`);
+                        const option = new Option(`${startDay} to ${endDay}`, `${i + 1}`);
                         daysOfWeek.appendChild(option);
                     }
 
@@ -2061,7 +2074,6 @@
 
         // Check if there are parameters in the URL
         if (window.location.search.length > 0 && $('#toAirport').val().length == 0) {
-            console.log('URL has parameters');
             assignFieldsFromUrl();
         }
         else {
@@ -2077,7 +2089,6 @@
             tomorrow.setDate(tomorrow.getDate() + 1);
             const defaultFromDate = tomorrow.toISOString().slice(0, 10);
             const defaultToDate = new Date(today.getFullYear() + 1, 11, 31).toISOString().slice(0, 10);
-
             // var noDatesChecked = $("#noDates").prop('checked');
             // var radioBetween = $('#isBetween').prop('checked');
             // var radioGreater = $('#greaterThanA').prop('checked');
@@ -2095,7 +2106,7 @@
             } else if (selectedChoice == 2) {
 
                 dateTabOption = 'Short';
-                daysOfWeek = $('#days-of-week').val();
+                daysOfWeek = $('#days-of-week option:selected').text();
             } else {
 
                 dateTabOption = 'Exact';
@@ -2108,11 +2119,11 @@
                 dateTo: endDateString ? endDateString : defaultToDate,
                 // isTargetOnly: false,
                 // selectedStops: $("#stops").val(),
-                // selectedDays: 14,
+                selectedDays: selectedDays,
                 // selectedCabin: $("#cabins").val(),
                 airline: $("#airline").val(),
                 // aircode: $("#aircode").val(),
-                // shortStays: dateTabOption == 'Short',
+                shortStays: dateTabOption == 'Short',
                 // radioBetween: false,
                 // radioGreater: false,
                 // radioLess: false,
@@ -2120,10 +2131,10 @@
                 // maxPrice: 0,
                 // greenDiff: false,
                 // redDiff: false,
-                // dateTabOption: dateTabOption,
-                // daysOfWeek: daysOfWeek,
+                dateTabOption: dateTabOption,
+                daysOfWeek: daysOfWeek,
             };
-
+            urlKeys = ['from', 'to', 'dateFrom', 'dateTo', 'airline'];
             // Filter out null or empty values
             var filteredFormData = {};
             var urlFormData = {};
@@ -2131,7 +2142,7 @@
                 var value = formData[key];
                 if (value !== null && value !== undefined && value !== '') {
                     filteredFormData[key] = value;
-                    if(value!=defaultFromDate && value!=defaultToDate){
+                    if (urlKeys.includes(key) && value != defaultFromDate && value != defaultToDate) {
                         urlFormData[key] = value;
                     }
                 }
@@ -2153,74 +2164,70 @@
             $('#fromAirport').select2('open');
             $('#fromAirport').val($(this).val()).trigger('change');
         });
-        applyToSelect.addEventListener('click', async() => {
-           await handleToAirportChange();
-           updateUrl();
-        
-        
+        applyToSelect.addEventListener('click', async () => {
+            await handleToAirportChange();
+            updateUrl();
+
+
         });
         function handleToAirportChange() {
             // return new Promise((resolve) => {
-                // Event handler for the change event of the "To" dropdown
+            // Event handler for the change event of the "To" dropdown
 
-                handlePopUp("selectToPopup", "f");
-                $('#toAirport').select2('close');
-                // Get the selected value to the "To" dropdown
-                var selectedToAirport = $('#toAirport').val();
-                if (EuropeCities.some(r => selectedToAirport.includes(r))) {
-                    $('#ShortStaysTab').show();
-                } else {
-                    $('#ShortStaysTab').hide();
-                    MonthsTab.click();
-                }
-                //append values to popupToAirport select
-                $('#popupToAirport').val(selectedToAirport).trigger('change');
-                // Clear the options in the "From" dropdown using Select2, haven't used trigger event here bcz if we use then it will trigger fromAirport change event and the load ddls from db endpoints call twice
-                $('#fromAirport').empty();
+            handlePopUp("selectToPopup", "f");
+            $('#toAirport').select2('close');
+            // Get the selected value to the "To" dropdown
+            var selectedToAirport = $('#toAirport').val();
 
-                emptyDropdowns();
+            //append values to popupToAirport select
+            $('#popupToAirport').val(selectedToAirport).trigger('change');
+            // Clear the options in the "From" dropdown using Select2, haven't used trigger event here bcz if we use then it will trigger fromAirport change event and the load ddls from db endpoints call twice
+            $('#fromAirport').empty();
+
+            emptyDropdowns();
+            // Check if selectedToAirport is not empty
+            if (selectedToAirport.length > 0) {
+                populateToChange(selectedToAirport)
+            } else {
+                // Resolve the promise if selectedToAirport is empty to ensure the chain continues
+                resolve();
+            };
+            checkEurope();
+            $("#hdnDestinationGroup").val('');
+            $("#hdnDestinationTo").val('');
+            if (selectedToAirport.every(selected => initialData.some(item => item.to === selected))) {
+                // current page to 1
+                currentPage = 1;
+                // Get the selected value to the "From" dropdown
+                var selectedFromAirport = $("#fromAirport").val();
                 // Check if selectedToAirport is not empty
                 if (selectedToAirport.length > 0) {
-                    populateToChange(selectedToAirport)
+                    // Load data from "fromDDL" to "All Groups in toDDL"
+                    getCheapestPricesOnTheBasisOfToSelectionChange();
                 } else {
-                    // Resolve the promise if selectedToAirport is empty to ensure the chain continues
-                    resolve();
-                };
-
-                $("#hdnDestinationGroup").val('');
-                $("#hdnDestinationTo").val('');
-                if (selectedToAirport.every(selected => initialData.some(item => item.to === selected))) {
-                    // current page to 1
-                    currentPage = 1;
-                    // Get the selected value to the "From" dropdown
-                    var selectedFromAirport = $("#fromAirport").val();
-                    // Check if selectedToAirport is not empty
-                    if (selectedToAirport.length > 0) {
-                        // Load data from "fromDDL" to "All Groups in toDDL"
-                        getCheapestPricesOnTheBasisOfToSelectionChange();
-                    } else {
-                        if (selectedFromAirport.length > 0) {
-                            getCheapestPricesOnTheBasisOfFromSelectedDDLAndToDDLFixedValues();
-                        }
-                        else {
-                            getCheapestPricesOnTheBasisOfToDDLFixedValues();
-                        }
+                    if (selectedFromAirport.length > 0) {
+                        getCheapestPricesOnTheBasisOfFromSelectedDDLAndToDDLFixedValues();
                     }
-                } else {
-                    getDeparatureCities(selectedToAirport);
+                    else {
+                        getCheapestPricesOnTheBasisOfToDDLFixedValues();
+                    }
                 }
+            } else {
+                getDeparatureCities(selectedToAirport);
+            }
             // });
 
         }
         function getDeparatureCities(toAirport) {
             var apiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? 'http://localhost:5016/api/GoogleWorldwide/GetFromAirports'
-                : 'http://localhost:5016/api/GoogleWorldwide/GetFromAirportsByToAirports?toAirports=' + toAirport;
+                ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetFromAirports'
+                : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetFromAirportsByToAirports?toAirports=' + toAirport;
             $.ajax({
                 url: apiUrl,
                 method: 'GET',
                 success: function (data) {
                     populateCardOrTable(data, true, false);
+                    gridTitle.textContent = "Departures";
                     // populateFromDropdown(data);
                 }
             });
@@ -2229,24 +2236,24 @@
         function populateToChange(selectedToAirport) {
             // Make an API request to fetch data based on the selected "To" airport
             var apiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? 'http://localhost:5016/api/GoogleWorldwide/GetFromAirports'
-                : 'http://localhost:5016/api/GoogleWorldwide/GetFromAirportsByToAirports?toAirports=' + selectedToAirport;
+                ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetFromAirports'
+                : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetFromAirportsByToAirports?toAirports=' + selectedToAirport;
 
             var daysApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllDays'
-                : 'http://localhost:5016/api/GoogleWorldwide/GetAllDaysByToAndFromAirports?toAirports=' + selectedToAirport;
+                ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllDays'
+                : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllDaysByToAndFromAirports?toAirports=' + selectedToAirport;
 
             var stopsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllStops'
-                : 'http://localhost:5016/api/GoogleWorldwide/GetAllStopsByToAndFromAirports?toAirports=' + selectedToAirport;
+                ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllStops'
+                : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllStopsByToAndFromAirports?toAirports=' + selectedToAirport;
 
             var cabinsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllCabins'
-                : 'http://localhost:5016/api/GoogleWorldwide/GetAllCabinsByToAndFromAirports?toAirports=' + selectedToAirport;
+                ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllCabins'
+                : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllCabinsByToAndFromAirports?toAirports=' + selectedToAirport;
 
             var airlinesApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllAirlines'
-                : 'http://localhost:5016/api/GoogleWorldwide/GetAllAirlinesByToAndFromAirports?toAirports=' + selectedToAirport;
+                ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllAirlines'
+                : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllAirlinesByToAndFromAirports?toAirports=' + selectedToAirport;
 
             $.ajax({
                 url: apiUrl,
@@ -2265,20 +2272,20 @@
                     // i.e. on page load we have 'from ddl' is selected as well, then search based on both from and to
                     if (selectedFromAirport.length > 0) {
                         daysApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                            ? 'http://localhost:5016/api/GoogleWorldwide/GetAllDays'
-                            : 'http://localhost:5016/api/GoogleWorldwide/GetAllDaysByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
+                            ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllDays'
+                            : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllDaysByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
 
                         stopsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                            ? 'http://localhost:5016/api/GoogleWorldwide/GetAllStops'
-                            : 'http://localhost:5016/api/GoogleWorldwide/GetAllStopsByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
+                            ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllStops'
+                            : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllStopsByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
 
                         cabinsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                            ? 'http://localhost:5016/api/GoogleWorldwide/GetAllCabins'
-                            : 'http://localhost:5016/api/GoogleWorldwide/GetAllCabinsByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
+                            ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllCabins'
+                            : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllCabinsByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
 
                         airlinesApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                            ? 'http://localhost:5016/api/GoogleWorldwide/GetAllAirlines'
-                            : 'http://localhost:5016/api/GoogleWorldwide/GetAllAirlinesByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
+                            ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllAirlines'
+                            : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllAirlinesByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
                     }
                     // Make another API request to fetch days data
                     $.ajax({
@@ -2356,20 +2363,20 @@
             $("#popupFromAirport").val(dep).trigger("change");
             $("#fromAirport").val(dep).trigger("change.select2");
             var daysApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllDays'
-                : 'http://localhost:5016/api/GoogleWorldwide/GetAllDaysByToAndFromAirports?toAirports=' + dest + '&fromAirports=' + dep;
+                ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllDays'
+                : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllDaysByToAndFromAirports?toAirports=' + dest + '&fromAirports=' + dep;
 
             var stopsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllStops'
-                : 'http://localhost:5016/api/GoogleWorldwide/GetAllStopsByToAndFromAirports?toAirports=' + dest + '&fromAirports=' + dep;
+                ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllStops'
+                : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllStopsByToAndFromAirports?toAirports=' + dest + '&fromAirports=' + dep;
 
             var cabinsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllCabins'
-                : 'http://localhost:5016/api/GoogleWorldwide/GetAllCabinsByToAndFromAirports?toAirports=' + dest + '&fromAirports=' + dep;
+                ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllCabins'
+                : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllCabinsByToAndFromAirports?toAirports=' + dest + '&fromAirports=' + dep;
 
             var airlinesApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllAirlines'
-                : 'http://localhost:5016/api/GoogleWorldwide/GetAllAirlinesByToAndFromAirports?toAirports=' + dest + '&fromAirports=' + dep;
+                ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllAirlines'
+                : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllAirlinesByToAndFromAirports?toAirports=' + dest + '&fromAirports=' + dep;
 
             // Make another API request to fetch days data
             $.ajax({
@@ -2405,6 +2412,7 @@
                                             //show airlines in the grid
                                             airlinesData.shift();
                                             populateCardOrTable(airlinesData, true, false);
+                                            gridTitle.textContent = "Airlines";
                                         },
                                         error: function (error) {
                                             console.error('Error fetching airlines data from the API:', error);
@@ -2443,7 +2451,7 @@
 
             // Make an AJAX request to submit the form data
             $.ajax({
-                url: "http://localhost:5016/api/Cheapest/GetCheapestPricesForGroups?groupNames=" + commaSeparatedString + "&dateFrom=" + dates.fromDate + "&dateTo=" + dates.toDate + "&page=" + page + "&pageSize=" + pageSize,
+                url: "https://api.schoolholidaydeals.co.uk/api/Cheapest/GetCheapestPricesForGroups?groupNames=" + commaSeparatedString + "&dateFrom=" + dates.fromDate + "&dateTo=" + dates.toDate + "&page=" + page + "&pageSize=" + pageSize,
                 method: 'GET',
                 success: function (response) {
                     // Handle the successful response
@@ -2451,10 +2459,10 @@
                     deals = response.cheapestPricedRecords;
 
                     const NewDeals = Object.values(deals.reduce((acc, current) => {
-                    if (!acc[current.group]) {
-                        acc[current.group] = current;
-                    }
-                    return acc;
+                        if (!acc[current.group]) {
+                            acc[current.group] = current;
+                        }
+                        return acc;
                     }, {}));
                     // Show or hide "Load More" button based on total pages
                     if (currentPage < response.totalPages) {
@@ -2783,9 +2791,9 @@
                             // Generate HTML for each deal
 
                             var dealHtml = `
-                                  <div class="row row-cheapest-cards" data-group="${deal.group}" data-to="${deal.to}" data-from="${deal.from}" data-airline="${deal.text}" style="margin-top:2px; border-bottom:solid 1px #bfbfbf; cursor: pointer;">
-                                      <div onmouseover="this.style.backgroundColor='rgba(210, 203, 203, 0.944)';" onmouseout="this.style.backgroundColor='white';" style="float:left;width:70%;height:55px;font-size:25px;background:#fff;text-align:center;padding-top:9px">${deal.group ? deal.group : (deal.citys ? deal.citys + ' (' + deal.to + ')' : (deal.city ? deal.city + ' (' + deal.from + ')' : deal.text))}</div>
-                                      <div onmouseover="this.style.backgroundColor='rgba(210, 203, 203, 0.944)';" onmouseout="this.style.backgroundColor='#DFDFDF';" style="float:right;width:30%;height:55px;background:#DFDFDF;text-align:center">
+                                  <div class="row row-cheapest-cards" data-group="${deal.group}" data-to="${deal.to}" data-from="${deal.from}" data-airline="${deal.text}" style=" border-bottom:solid 1px #bfbfbf; cursor: pointer;">
+                                      <div onmouseover="this.style.backgroundColor='#a2c7f6';" onmouseout="this.style.backgroundColor='white';" style="float:left;width:70%;height:55px;font-size:25px;background:#fff;text-align:center;padding-top:9px">${deal.group ? deal.group : (deal.citys ? deal.citys + ' (' + deal.to + ')' : (deal.city ? deal.city + ' (' + deal.from + ')' : deal.text))}</div>
+                                      <div onmouseover="this.style.backgroundColor='#0049a4d9';" onmouseout="this.style.backgroundColor='#0049a4';" style="float:right;width:30%;color:white;height:55px;background:#0049a4;text-align:center">
                                           <div style="font-size:11px;padding-right:10px">From <i style="float:right" class="fas fa-caret-right"></i></div>
                                           <span style="font-size:24px">&pound;${deal.new_price ? deal.new_price : deal.cheapest_price} </span><span style="font-size:12px"> Roundtrip</span>
                                           
@@ -2799,6 +2807,7 @@
                             container.append(dealHtml);
                         }
                         else {
+                            gridTitle.textContent = "Flights"
                             $('#refresh').show();
                             $('#refresh').click(function () {
                                 //remove query string from url
@@ -2990,117 +2999,9 @@
             const formattedDate = new Date(dateString).toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' });
             return formattedDate;
         }
-
-
-        function exactDatesToDateSettingForShortStays() {
-            // Check if dateRangePicker is already applied
-            if ($('#shortStaysPickerTo').data('dateRangePicker')) {
-                // firstly destroying it so that if its already there so it will not throw issue on re creating
-                $('#shortStaysPickerTo').data('dateRangePicker').destroy();
-
-                assignDateRangePicker2ForShortStays();
-            }
-            else {
-                // dateRangePicker is not applied
-                assignDateRangePicker2ForShortStays();
-            }
-        }
-        function assignDateRangePicker2ForShortStays() {
-            var selectedDays = parseInt($('#short-stays-days').val());
-            var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-            var startDay = daysOfWeek.indexOf($('#days-of-week').val().split(' ')[0]);
-            var endDay = daysOfWeek.indexOf($('#days-of-week').val().split(' ')[2]);
-            var shortStaysDatesFrom = new Date($('#shortStaysPickerFrom').val());
-            var month = shortStaysDatesFrom.getMonth();
-            var year = shortStaysDatesFrom.getFullYear();
-
-            var calendarOptions = {
-                autoClose: true,
-                singleDate: true,
-                showShortcuts: false,
-                singleMonth: true,
-                customTopBar: 'Please Select To Date',
-                monthSelect: true,
-                yearSelect: true,
-                inline: true,
-                container: '#short-stays-dates-second-col',
-                alwaysOpen: true,
-                startDate: new Date(year, month, 1), // Set the start date to the first day of the selected month
-                beforeShowDay: function (t) {
-                    var dayIndex = t.getDay();
-                    var valid = dayIndex === endDay && t >= shortStaysDatesFrom;
-                    var invalid = dayIndex === startDay;
-                    var _class = invalid ? 'disabled-day' : '';
-                    var _tooltip = valid ? '' : 'This day is disabled';
-                    return [valid, _class, _tooltip];
-                }
-            };
-
-            // $('#shortStaysPickerTo').dateRangePicker(calendarOptions);
-        }
-
-        function exactDatesToDateSetting() {
-            $('#dateRangePicker2').css({
-                'font-size': '16px', // Adjust font size as needed
-                'color': '#333' // Adjust font color as needed
-            });
-            // Check if dateRangePicker is already applied
-            if ($('#dateRangePicker2').data('dateRangePicker')) {
-                // firstly destroying it so that if its already there so it will not throw issue on re creating
-                $('#dateRangePicker2').data('dateRangePicker').destroy();
-
-                assignDateRangePicker2();
-            }
-            else {
-                // dateRangePicker is not applied
-                assignDateRangePicker2();
-            }
-        }
-        function assignDateRangePicker2() {
-            var customDateFrom = new Date($('#dateRangePicker').val());
-            var month = customDateFrom.getMonth();
-            var year = customDateFrom.getFullYear();
-            // $('#dateRangePicker2').dateRangePicker(
-            // 			{
-            // 				autoClose: true,
-            // 				singleDate : true,
-            // 				showShortcuts: false,
-            // 				singleMonth: true,
-            // 				customTopBar: 'Select latest departure date',
-            // 				monthSelect: true,
-            // 				yearSelect: true,
-            // 				inline:true,
-            // 				container: '#exact-dates-second-col',
-            // 				alwaysOpen:true,
-            // 				startDate: new Date(year, month, 1), // Set the start date to the first day of the selected month
-            // 				beforeShowDay: function(t)
-            // 				{
-            // 					//var valid = !(t.getDay() == 0 || t.getDay() == 6);  //disable saturday and sunday
-            // 					var valid = true;
-            // 					var startDate = $('#dateRangePicker').val(); // Get the value of the first date picker
-            // 					var endDate = t.toISOString().split('T')[0]; // Get the current date in ISO format
-
-            // 					if (startDate && endDate < startDate) {
-            // 						valid = false; // Disable dates before the start date
-            // 						// Make the end date as start date if user selects start date that exists after the already selected end date
-            // 						// realEndDate = $('#dateRangePicker2').val(); // End date without ISO format
-            // 						// if(realEndDate && realEndDate < startDate){
-            // 						// 	$('#dateRangePicker2').val(startDate);
-            // 						// }
-            // 					}
-            // 					// when first time, we select start date to show end date calendar, it should open current date in 'end / to date'
-            // 					// if($('#dateRangePicker2').val() === ''){
-            // 					// 	$('#dateRangePicker2').val(startDate);
-            // 					// }
-            // 					var _class = '';
-            // 					//var _tooltip = valid ? '' : 'weekends are disabled';
-            // 					return [valid,_class]; //return [valid,_class,_tooltip];
-            // 				}
-            // 			});
-        }
         function bindOtherDDLs() {
             // Load Stops Dropdown
-            const stopsPromise = fetchData('http://localhost:5016/api/GoogleWorldwide/GetAllStops')
+            const stopsPromise = fetchData('https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllStops')
                 .then(function (data) {
                     // Remove existing options
                     $('#stops').empty();
@@ -3108,14 +3009,14 @@
                 });
 
             // Load Days Dropdown
-            const daysPromise = fetchData('http://localhost:5016/api/GoogleWorldwide/GetAllDays')
+            const daysPromise = fetchData('https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllDays')
                 .then(function (data) {
                     $('#days').empty();
                     populateOtherDropdowns(data, "#days");
                 });
 
             // Load Cabins Dropdown
-            const cabinsPromise = fetchData('http://localhost:5016/api/GoogleWorldwide/GetAllCabins')
+            const cabinsPromise = fetchData('https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllCabins')
                 .then(function (data) {
                     $('#cabins').empty();
                     populateOtherDropdowns(data, "#cabins");
@@ -3126,7 +3027,7 @@
         }
 
         function bindToAirportDDLWhenParams() {
-            return fetchData('http://localhost:5016/api/GoogleWorldwide/GetToAirports')
+            return fetchData('https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetToAirports')
                 .then(function (data) {
                     populateDropdown(data);
                 }).then(() => {
@@ -3152,11 +3053,19 @@
                 });
         }
 
-
+        function checkEurope() {
+            toAiroport = $('#toAirport').val();
+            if (EuropeCities.some(r => toAiroport.includes(r))) {
+                $('#ShortStaysTab').show();
+            } else {
+                $('#ShortStaysTab').hide();
+                MonthsTab.click();
+            }
+        }
         function bindToAirportDDL() {
             // Fetch initial static records
             getEuropeCities();
-            fetchData('http://localhost:5016/api/GoogleWorldwide/GetToAirports')
+            fetchData('https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetToAirports')
                 .then(function (data) {
                     populateDropdown(data);
                 })
@@ -3190,7 +3099,7 @@
                         // as its not ajax method as thats why need to show spinner manually
                         showSpinner();
                         // Fetch all records from the database
-                        fetchData('http://localhost:5016/api/GoogleWorldwide/GetToAirports')
+                        fetchData('https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetToAirports')
                             .then(function (data) {
                                 // Remove existing options
                                 $('#toAirport').empty();
@@ -3253,8 +3162,8 @@
 
 
 
-        
-        applyFromSelect.addEventListener('click',async ()=>{
+
+        applyFromSelect.addEventListener('click', async () => {
             await handleFromAirportChange();
             updateUrl();
         });
@@ -3281,20 +3190,20 @@
             emptyDropdowns();
 
             var daysApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllDays'
-                : 'http://localhost:5016/api/GoogleWorldwide/GetAllDaysByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
+                ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllDays'
+                : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllDaysByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
 
             var stopsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllStops'
-                : 'http://localhost:5016/api/GoogleWorldwide/GetAllStopsByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
+                ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllStops'
+                : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllStopsByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
 
             var cabinsApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllCabins'
-                : 'http://localhost:5016/api/GoogleWorldwide/GetAllCabinsByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
+                ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllCabins'
+                : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllCabinsByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
 
             var airlinesApiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
-                ? 'http://localhost:5016/api/GoogleWorldwide/GetAllAirlines'
-                : 'http://localhost:5016/api/GoogleWorldwide/GetAllAirlinesByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
+                ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllAirlines'
+                : 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetAllAirlinesByToAndFromAirports?toAirports=' + selectedToAirport + '&fromAirports=' + selectedFromAirport;
 
             // Make another API request to fetch days data
             $.ajax({
@@ -3327,7 +3236,7 @@
                                         success: function (airlinesData) {
                                             // Populate the "airlines" dropdown with the retrieved data
                                             populateOtherDropdowns(airlinesData, "#airline");
-                                            if  ($("#ddlSortByDiv").css("display") === "none") {
+                                            if ($("#ddlSortByDiv").css("display") === "none") {
                                                 airlinesData.shift();
                                                 populateCardOrTable(airlinesData, true, false);
                                             }
@@ -3533,6 +3442,7 @@
                     updateUrl();
                     getResult();
                 } else {
+
                     emptyDropdowns();
                     const destination = $('#toAirport').val()[0];
                     loadAirlines(destination, deparature);
@@ -3599,11 +3509,12 @@
                 // Select the option with value, but it will not trigger change event
                 $("#toAirport").val(todropdown).trigger("change.select2");
                 $("#popupToAirport").val(todropdown).trigger("change");
+                checkEurope();
             }
             let apiFunctionName = todropdown !== 'Europe' ? 'GetCheapestPricesFromDepartureToSelectedGroupWorldwide' : 'GetCheapestPricesFromDepartureToSelectedGroupDomestic'
             // Make an AJAX request to submit the form data
             $.ajax({
-                url: "http://localhost:5016/api/Cheapest/" + apiFunctionName + "?departure=" + fromdropdown + "&destination=" + todropdown + "&dateFrom=" + fromDate + "&dateTo=" + toDate + "&page=" + page + "&pageSize=" + pageSize,
+                url: "https://api.schoolholidaydeals.co.uk/api/Cheapest/" + apiFunctionName + "?departure=" + fromdropdown + "&destination=" + todropdown + "&dateFrom=" + fromDate + "&dateTo=" + toDate + "&page=" + page + "&pageSize=" + pageSize,
                 method: 'GET',
                 success: function (response) {
                     // Handle the successful response
@@ -3663,7 +3574,7 @@
             // let pageSize = 12;
             // // Make an AJAX request to submit the form data
             // $.ajax({
-            //     url: "http://localhost:5016/api/Cheapest/" + apiFunctionName + "?departure=" + departure + "&destination=" + destination + "&dateFrom=" + fromDate + "&dateTo=" + toDate + "&sortBy=" + sortBy + "&page=" + page + "&pageSize=" + pageSize,
+            //     url: "https://api.schoolholidaydeals.co.uk/api/Cheapest/" + apiFunctionName + "?departure=" + departure + "&destination=" + destination + "&dateFrom=" + fromDate + "&dateTo=" + toDate + "&sortBy=" + sortBy + "&page=" + page + "&pageSize=" + pageSize,
             //     method: 'GET',
             //     success: function (response) {
             //         // Handle the successful response
@@ -3697,7 +3608,7 @@
                 }
             });
         }
-        function updateUrl(){
+        function updateUrl() {
             //adding the structure as the processes moves along
             result = getFormAndFilteredFormData();
             UrlFormData = result.urlFormData;
@@ -3711,7 +3622,7 @@
             // Create the new URL by appending the query string
             var newUrl = baseUrl + '?' + queryString;
             // Redirect to the new URL
-            if(Object.keys(UrlFormData).length >0){
+            if (Object.keys(UrlFormData).length > 0) {
                 window.history.replaceState(null, null, newUrl);
             }
         }
@@ -3734,7 +3645,7 @@
             }
             // Make an AJAX request to submit the form data
             $.ajax({
-                url: "http://localhost:5016/api/Cheapest/GetCheapestPricesFromDepartureToEachGroup?departure=" + fromdropdown + "&destinationGroupNames=" + commaSeparatedString + "&dateFrom=" + dates.fromDate + "&dateTo=" + dates.toDate + "&page=" + page + "&pageSize=" + pageSize,
+                url: "https://api.schoolholidaydeals.co.uk/api/Cheapest/GetCheapestPricesFromDepartureToEachGroup?departure=" + fromdropdown + "&destinationGroupNames=" + commaSeparatedString + "&dateFrom=" + dates.fromDate + "&dateTo=" + dates.toDate + "&page=" + page + "&pageSize=" + pageSize,
                 method: 'GET',
                 success: function (response) {
                     // Handle the successful response
@@ -3938,7 +3849,7 @@
 
         // bindToAirportDDL();
 
-        // return fetchData('http://localhost:5016/api/Cheapest/GetFromAirports')
+        // return fetchData('https://api.schoolholidaydeals.co.uk/api/Cheapest/GetFromAirports')
         //     .then(function (data) {
         //         populateFromDropdown(data);
         //     }).then(() => {
@@ -4018,8 +3929,13 @@
 
                     var startDate = new Date(yearStart, monthToInt(month), 1);
                     var endDate = new Date(yearEnd, monthToInt(month) + 1, 0);
-
-                    startDateString = startDate.getFullYear() + '-' + pad((startDate.getMonth() + 1), 2) + '-' + pad(startDate.getDate(), 2);
+                    if (selectedChoice == 2) {
+                        selectedDay=daysOfWeek.value;
+                        startDay = getFirstSpecificDay(yearStart, monthToInt(month), selectedDay);
+                        startDateString = startDate.getFullYear() + '-' + pad((startDate.getMonth() + 1), 2) + '-' + pad(startDay, 2);
+                    }else{
+                        startDateString = startDate.getFullYear() + '-' + pad((startDate.getMonth() + 1), 2) + '-' + pad(startDate.getDate(), 2);
+                    }
                     endDateString = endDate.getFullYear() + '-' + pad((endDate.getMonth() + 1), 2) + '-' + pad(endDate.getDate(), 2);
 
                     showResult.textContent = startDateString + " to " + endDateString;
@@ -4035,7 +3951,13 @@
                     var endDate = new Date(yearEnd, monthToInt(secondMonth) + 1, 0);
 
 
-                    startDateString = startDate.getFullYear() + '-' + pad((startDate.getMonth() + 1), 2) + '-' + pad(startDate.getDate(), 2);
+                    if (selectedChoice == 2) {
+                        selectedDay=daysOfWeek.value;
+                        startDay = getFirstSpecificDay(yearStart, monthToInt(month), selectedDay);
+                        startDateString = startDate.getFullYear() + '-' + pad((startDate.getMonth() + 1), 2) + '-' + pad(startDay, 2);
+                    }else{
+                        startDateString = startDate.getFullYear() + '-' + pad((startDate.getMonth() + 1), 2) + '-' + pad(startDate.getDate(), 2);
+                    }
                     endDateString = endDate.getFullYear() + '-' + pad((endDate.getMonth() + 1), 2) + '-' + pad(endDate.getDate(), 2);
 
                     showResult.textContent = startDateString + " to " + endDateString;
@@ -4091,9 +4013,10 @@
             $('#pagination').remove();
             $('#pag').html('<div id="pagination"></div>');
             // Make an AJAX request to submit the form data
+            console.log(queryString);
             $.ajax({
                 type: "GET",
-                url: "http://localhost:5016/api/GoogleWorldwide/GetGFAirlineRecords?" + queryString,
+                url: "https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetGFAirlineRecords?" + queryString,
                 contentType: "application/json",
                 // data: JSON.stringify(formData),
                 success: function (response) {
@@ -4135,7 +4058,7 @@
     });
 
     async function getCityFromCode(code) {
-        const response = await fetch(`http://localhost:5016/api/GoogleWorldwide/GetCityFromCode?code=${code}`);
+        const response = await fetch(`https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetCityFromCode?code=${code}`);
         if (response.ok) {
             const data = await response.json();
             return data.city;
@@ -4144,8 +4067,16 @@
             return null;
         }
     }
+    function getFirstSpecificDay(year, month, dayOfWeek) {
+        // Create a Date object for the 1st of the specified month
+        let date = new Date(year, month , 1);
+        // Get the day of the week (1-7, where 1 is Monday and 7 is Sunday)
+        let firstDayOfMonth = date.getDay() || 7;
 
-
+        // Calculate how many days to add
+        let daysToAdd = (dayOfWeek - firstDayOfMonth + 7) % 7;
+        return daysToAdd+1;
+    }
 
     function toggleInputBVisibility() {
         var radio1 = document.getElementById("isBetween");
