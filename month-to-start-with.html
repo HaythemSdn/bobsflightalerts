@@ -1160,14 +1160,26 @@
         .select2-container .select2-search--inline .select2-search__field {
             margin-top: 0;
         }
+
+        .card-filter {
+            flex-direction: column;
+        }
+
+        .shortStaysFilters {
+            flex-direction: column;
+        }
+
+        .no-data img {
+            width: 350px;
+            height: 350px;
+        }
     }
 
     .LoadMoreDiv {
-        display: flex;
+        display: none;
         justify-content: center;
         align-items: center;
         width: 100%;
-        margin: 20px 0px;
     }
 
     #loadMoreBtn {
@@ -1228,6 +1240,41 @@
         text-align: center;
         background-color: white;
 
+    }
+
+    .shortStaysDiv {
+        display: none;
+        font-family: system-ui, sans-serif;
+        font-size: 2rem;
+        font-weight: bold;
+        line-height: 1.1;
+        grid-template-columns: 1em auto;
+        gap: 0.5em;
+    }
+
+    .card-filter {
+        display: none;
+        justify-content: space-around;
+        align-items: center;
+        padding: 10px;
+    }
+
+    .card-filter select {
+        padding: 4px;
+        border-radius: 8px;
+        margin: 0 5px;
+        background: white;
+    }
+
+    .no-data {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: white;
+        margin: 0 -15px;
+        padding: 10px;
+        text-align: center;
     }
 </style>
 <br /><br />
@@ -1331,12 +1378,6 @@
             </div>
         </div>
 
-        <div style="display: none;" class="col-md-3 form-group">
-            <div class="position-relative mt-5">
-                <label for="shortStays" class="title">Short Stays</label>
-                <input type="checkbox" id="shortStays" disabled>
-            </div>
-        </div>
     </div>
     <div class="submit" style="margin-top: 0;">
         <button id="submit-filters"
@@ -1357,12 +1398,39 @@
 </div>
 
 <div class="container">
-    <div id="ddlSortByDiv" class="md" style="display: none;">
-        <b>Sort by:</b>
-        <select id="sortPriceCardDDL">
-            <option value="New_Price">New Price</option>
-            <option value="Dates">Date</option>
-        </select>
+    <div class="card-filter" id="card-filter">
+        <div id="ddlSortByDiv" class="md" style="margin-top: 5px;">
+            <b>Sort by:</b>
+            <select id="sortPriceCardDDL">
+                <option value="New_Price">New Price</option>
+                <option value="Dates">Date</option>
+            </select>
+        </div>
+        <div id="shortStaysFilters" class="shortStaysFilters" style="display: none; ">
+            <div style="display: flex; align-items: center;margin-top: 5px;">
+                <b>How Many Nights:</b>
+                <select name="short-stays-days" id="nights">
+                    <option value="">Any</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+            <div style="display: none;align-items: center;margin-top: 5px;" class="show-days">
+                <b>Which Nights:</b>
+                <select name="show-days" id="days-of-week">
+                    <option value="">Any</option>
+                    <option value="1">Monday to Wednesday</option>
+                    <option value="2">Tuesday to Thursday</option>
+                    <option value="3">Wednesday to Friday</option>
+                    <option value="4">Thursday to Saturday</option>
+                    <option value="5">Friday to Sunday</option>
+                    <option value="6">Saturday to Monday</option>
+                    <option value="7">Sunday to Tuesday</option>
+                </select>
+
+            </div>
+        </div>
     </div>
     <div class="row card-deals-container">
         <!-- Card will be populated dynamically -->
@@ -1398,7 +1466,6 @@
     <ul class="choices">
         <li id="CustomRangeTab">Custom Range</li>
         <li id="MonthsTab" class="selected">Months</li>
-        <li id="ShortStaysTab" style="display: none;">Short Stays</li>
     </ul>
     <div id="0" style="display: none;">
         <input type="text" id="CustomRangeInput" name="daterange" value="01/01/2024 - 01/15/2024" />
@@ -1408,7 +1475,12 @@
             <span>-/+ 14</span>
         </div>
     </div>
-    <div id="1">
+    <div id="1" style="display: flex; flex-direction: column; align-items: center;">
+        <!-- working -->
+        <label class="shortStaysDiv" id="shortStaysDiv">
+            <input type="checkbox" id="shortStays" />
+            Short stays
+        </label>
         <div class="months">
             <div class="month">
                 <h3><span>2024</span></h3>
@@ -1446,29 +1518,7 @@
             <p>Short Stays works only with Europe destinations !
         </div>
         <div class="months">
-            <h3>How Many Nights ?</h3>
-            <select name="short-stays-days" id="nights"
-                style="padding: 10px; border-radius: 8px; width: 70%; background: white;">
-                <option value="">Please Select</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-            </select>
-            <div style="width: 100%; display: none ;text-align: center;" class="show-days">
-                <h3>Which Nights ?</h3>
-                <select name="show-days" id="days-of-week"
-                    style=" padding: 10px; border-radius: 8px; width: 75%;margin: 0 auto; background: white;">
-                    <option value="">Please Select</option>
-                    <option value="1">Monday to Wednesday</option>
-                    <option value="2">Tuesday to Thursday</option>
-                    <option value="3">Wednesday to Friday</option>
-                    <option value="4">Thursday to Saturday</option>
-                    <option value="5">Friday to Sunday</option>
-                    <option value="6">Saturday to Monday</option>
-                    <option value="7">Sunday to Tuesday</option>
-                </select>
 
-            </div>
             <div class="month">
                 <h3><span>2024</span></h3>
                 <ul>
@@ -1718,7 +1768,6 @@
     var endDateString = null;
     const from = document.getElementById('fromAirport').value;
     const to = document.getElementById('toAirport').value;
-    const ShortStaysTab = document.getElementById('ShortStaysTab');
     const MonthsTab = document.getElementById('MonthsTab');
     const CustomRangeTab = document.getElementById('CustomRangeTab');
     const applyDate = document.querySelector('.applyDate');
@@ -1731,7 +1780,6 @@
     const showResult = document.querySelector('.show-result');
     var MonthsResult = document.getElementById("MonthsResult");
     var daysOfWeek = document.getElementById('days-of-week');
-
     const gridTitle = document.querySelector('.grid-title');
     //select popup
     const selectFromPopup = document.getElementById("selectFromPopup");
@@ -1741,270 +1789,9 @@
     const closeSubscribe = document.querySelector(".close-subscribe");
     let EuropeCities = ["Europe"];
     let selectedDays = null;
-    function getEuropeCities() {
-        return $.ajax({
-            url: 'https://api.schoolholidaydeals.co.uk/api/Cheapest/GetCheapestPricesFromDepartureToSelectedGroupDomestic',
-            method: 'GET',
-            data: {
-                destination: 'Europe',
-                pageSize: 190
-            },
-            dataType: 'json'
-        })
-            .then(function (data) {
-                var deals = data.worldwideCheapestPricedRecords;
-
-                deals.forEach(function (deal) {
-                    EuropeCities.push(deal.to);
-                });
-
-            })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                console.error('Failed to fetch Europe cities:', textStatus, errorThrown);
-                return null;
-            });
-    }
-    const handlePopUp = (id, action) => {
-        const popup = document.getElementById(id);
-        if (action == "f") {
-            popup.style.display = "none";
-        }
-        if (action == "o") {
-            popup.style.display = "flex";
-        }
-    }
-    //handle clear buttons
-    function clearAllSelections(selectId) {
-        // Clear the selection in Select2
-        $('#' + selectId).val(null).trigger('change');
-
-        // Manually trigger unselect event for each previously selected option
-        $('#' + selectId + ' option').each(function () {
-            var $option = $(this);
-            if ($option.data('selected')) {
-                $option.data('selected', false);
-                var data = $option.data();
-                $('#' + selectId).trigger({
-                    type: 'select2:unselect',
-                    params: {
-                        data: data
-                    }
-                });
-            }
-        });
-        // Make sure all checkboxes are unchecked and aria-selected is false
-        var $select2Results = $('#' + selectId).data('select2').$results;
-        $select2Results.find('li[role="option"]').each(function () {
-            $(this).attr('aria-selected', 'false');
-            $(this).find('input[type="checkbox"]').prop('checked', false);
-        });
-    }
-    showPopupDiv.addEventListener("click", () => handlePopUp("popup", "o"));
-    close.addEventListener("click", () => handlePopUp("popup", "f"));
-    closeSubscribe.addEventListener("click", () => handlePopUp("subscribe-popup", "f"));
-
-    //handle month selection
-    let selectedMonths = [];
-    const months = document.querySelectorAll('.months .month li');
-    const updateSelectedMonths = () => {
-        if (selectedMonths.length == 1) {
-            let startIndex = Array.from(months).indexOf(selectedMonths[0]);
-            for (let i = 0; i < months.length; i++) {
-                if (i < startIndex) {
-                    months[i].classList.add('non-selectable');
-                } else if (i > startIndex) {
-                    months[i].classList.remove('non-selectable');
-                }
-            }
-        } else {
-            months.forEach(m => {
-                m.classList.remove('non-selectable');
-            });
-        }
-    }
-    const clear = () => {
-        selectedMonths = [];
-        months.forEach(m => {
-            m.classList.remove('starting-month', 'ending-month', 'between-month');
-        });
-        updateSelectedMonths();
-        showResult.textContent = "____-__-__ to ____-__-__";
-    }
-    const handleMonths = (month) => {
-        let startIndex, endIndex;
-        const isSelected = selectedMonths.includes(month);
-        if (isSelected) {
-            //selected
-            if (selectedMonths.length > 1) {
-                startIndex = Array.from(months).indexOf(selectedMonths[0]);
-                endIndex = Array.from(months).indexOf(selectedMonths[1]);
-                if (month.classList.contains("starting-month")) {
-                    month.classList.remove('starting-month');
-                    selectedMonths.shift();
-                    selectedMonths[0].classList.replace('ending-month', 'starting-month');
-                } else {
-                    month.classList.remove('ending-month');
-                    selectedMonths.pop();
-                }
-                for (let i = startIndex + 1; i < endIndex; i++) {
-                    months[i].classList.remove('between-month');
-                }
-            } else {
-                month.classList.remove('starting-month');
-                selectedMonths.pop();
-            }
-        }
-        else {
-            //not yet selected
-            if (selectedMonths.length == 0) {
-                month.classList.add('starting-month');
-                selectedMonths.push(month);
-            } else {
-                startIndex = Array.from(months).indexOf(selectedMonths[0]);
-                if (selectedMonths.length == 1) {
-                    month.classList.add('ending-month');
-                    selectedMonths.push(month);
-                    endIndex = Array.from(months).indexOf(selectedMonths[1]);
-                    for (let i = startIndex + 1; i < endIndex; i++) {
-                        months[i].classList.add('between-month');
-                    }
-                } else {
-                    clear();
-                    handleMonths(month);
-                }
-            }
-        }
-
-        updateSelectedMonths();
-
-    };
-    months.forEach((month, index) => {
-        month.addEventListener('click', () => handleMonths(month));
-
-    });
-
-    const DisablePassedMonths = () => {
-        const currentDate = new Date();
-        const currentYear = currentDate.getFullYear();
-        const currentMonth = currentDate.getMonth();
-        // Get all the month list items
-        const monthLists = document.querySelectorAll('.month ul');
-        // Loop through each month list
-        monthLists.forEach(monthList => {
-            const monthItems = monthList.querySelectorAll('li');
-            // Loop through each month item
-            monthItems.forEach((monthItem, index) => {
-                const itemYear = monthList.previousElementSibling.textContent.trim();
-                const itemMonth = index;
-                // Check if the month has passed
-                if (itemYear < currentYear || (itemYear == currentYear && itemMonth <= currentMonth)) {
-                    monthItem.classList.add('Disabled');
-                }
-            });
-        });
-    }
-    DisablePassedMonths();
-
-    // handle choices selection
-    const choices = document.querySelectorAll('.choices li');
-    choices.forEach((choice, index) => {
-        choice.addEventListener('click', function () {
-            selectedChoice = index;
-            clear();
-            choices.forEach(c => {
-                c.classList.remove('selected');
-            });
-            this.classList.add('selected');
-            document.getElementById(index).style.display = "block";
-            for (let i = 0; i < choices.length; i++) {
-                if (i != index) {
-                    document.getElementById(i).style.display = "none";
-                }
-            }
-            //handle short stays
-            if (index == 2) {
-                const showDays = document.querySelector('.show-days');
-                var Months = document.querySelector('.month');
-                var ShortStaysDiv = document.getElementById('2');
-                var Months = ShortStaysDiv.querySelector('.month');
-                applyDate.style.cursor = "not-allowed";
-                if (daysOfWeek.value == "") {
-                    Months.style.display = "none";
-                } else {
-                    Months.style.display = "block";
-                }
-                const generateDaysOptions = (nights) => {
-                    selectedDays = nights;
-                    if (nights === "") {
-                        Months.style.display = "none";
-                        showDays.style.display = "none";
-                        return;
-                    }
-                    nights = parseInt(nights)
-                    showDays.style.display = "block";
-                    daysOfWeek.innerHTML = "";
-                    const weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-
-                    // Create days according to nights value
-                    daysOfWeek.appendChild(new Option("Please Select", ""));
-                    for (let i = 0; i < weekDays.length; i++) {
-                        const startDay = weekDays[i];
-                        var index = (i + nights) % weekDays.length;
-                        const endDay = weekDays[index];
-                        const option = new Option(`${startDay} to ${endDay}`, `${i + 1}`);
-                        daysOfWeek.appendChild(option);
-                    }
-
-                    if (daysOfWeek.value === "") {
-                        Months.style.display = "none";
-                    } else {
-                        Months.style.display = "block";
-                    }
-                }
-                //handle select change
-                document.getElementById('nights').addEventListener('change', function () {
-                    generateDaysOptions(this.value);
-                });
-                daysOfWeek.addEventListener('change', function () {
-                    if (this.value == "") {
-                        Months.style.display = "none";
-                    } else {
-                        Months.style.display = "block";
-                    }
-                    if (Months.style.display == "block") {
-                        applyDate.style.cursor = "pointer";
-                    } else {
-                        applyDate.style.cursor = "not-allowed";
-                    }
-                });
-                //handle Custom Range
-                $('input[name="daterange"]').daterangepicker({
-                    opens: 'center'
-                }, function (start, end, label) {
-                    startDateString = start.format('YYYY-MM-DD');
-                    endDateString = end.format('YYYY-MM-DD');
-                    showResult.textContent = start.format('YYYY-MM-DD') + " to " + end.format('YYYY-MM-DD');
-                });
-
-            }
-        });
-
-    });
 
 
-
-    //handle extra days
-    const extraDays = document.querySelectorAll('.extra-days span');
-    extraDays.forEach((day, index) => {
-        day.addEventListener('click', function () {
-            extraDays.forEach(d => {
-                d.classList.remove('selected');
-            });
-            this.classList.add('selected');
-        });
-    });
-
-    $(document).ready(function () {
+    $(document).ready(async function () {
         var currentPage = 1;
         var firstCall = true; // On Page load, we can set it true
 
@@ -2071,7 +1858,7 @@
                 placeholder: 'Any Airline',
             }
         );
-
+        await getEuropeCities();
         // Check if there are parameters in the URL
         if (window.location.search.length > 0 && $('#toAirport').val().length == 0) {
             assignFieldsFromUrl();
@@ -2083,12 +1870,14 @@
         }
         function getFormAndFilteredFormData() {
             var dateTabOption;
-            var daysOfWeek = null;
+            var daysWeek = null;
             const today = new Date();
             const tomorrow = (new Date(today));
             tomorrow.setDate(tomorrow.getDate() + 1);
-            const defaultFromDate = tomorrow.toISOString().slice(0, 10);
-            const defaultToDate = new Date(today.getFullYear() + 1, 11, 31).toISOString().slice(0, 10);
+            // const defaultFromDate = tomorrow.toISOString().slice(0, 10);
+            // const defaultToDate = new Date(today.getFullYear() + 1, 11, 31).toISOString().slice(0, 10);
+            const defaultFromDate='1997-01-01';
+            const defaultToDate='1997-01-01';
             // var noDatesChecked = $("#noDates").prop('checked');
             // var radioBetween = $('#isBetween').prop('checked');
             // var radioGreater = $('#greaterThanA').prop('checked');
@@ -2099,15 +1888,17 @@
             var toArray = $("#popupToAirport").val();
             // Convert the array of strings to a comma-separated string
             var to = toArray.join(',');
-
             if (selectedChoice == 1) {
 
                 dateTabOption = 'Month';
-            } else if (selectedChoice == 2) {
-
-                dateTabOption = 'Short';
-                daysOfWeek = $('#days-of-week option:selected').text();
-            } else {
+                if ($('#shortStays').prop('checked')) {
+                    dateTabOption = 'Short';
+                    if (daysOfWeek && daysOfWeek.value!="") {
+                        daysWeek=daysOfWeek.options[daysOfWeek.selectedIndex].text;
+                    }
+                }
+            }
+            else {
 
                 dateTabOption = 'Exact';
             }
@@ -2123,7 +1914,7 @@
                 // selectedCabin: $("#cabins").val(),
                 airline: $("#airline").val(),
                 // aircode: $("#aircode").val(),
-                shortStays: dateTabOption == 'Short',
+                shortStays:$('#shortStays').prop('checked'),
                 // radioBetween: false,
                 // radioGreater: false,
                 // radioLess: false,
@@ -2132,7 +1923,7 @@
                 // greenDiff: false,
                 // redDiff: false,
                 dateTabOption: dateTabOption,
-                daysOfWeek: daysOfWeek,
+                daysOfWeek: daysWeek,
             };
             urlKeys = ['from', 'to', 'dateFrom', 'dateTo', 'airline'];
             // Filter out null or empty values
@@ -2173,49 +1964,48 @@
         function handleToAirportChange() {
             // return new Promise((resolve) => {
             // Event handler for the change event of the "To" dropdown
-
-            handlePopUp("selectToPopup", "f");
-            $('#toAirport').select2('close');
-            // Get the selected value to the "To" dropdown
-            var selectedToAirport = $('#toAirport').val();
-
-            //append values to popupToAirport select
-            $('#popupToAirport').val(selectedToAirport).trigger('change');
-            // Clear the options in the "From" dropdown using Select2, haven't used trigger event here bcz if we use then it will trigger fromAirport change event and the load ddls from db endpoints call twice
-            $('#fromAirport').empty();
-
-            emptyDropdowns();
-            // Check if selectedToAirport is not empty
-            if (selectedToAirport.length > 0) {
-                populateToChange(selectedToAirport)
-            } else {
-                // Resolve the promise if selectedToAirport is empty to ensure the chain continues
-                resolve();
-            };
-            checkEurope();
-            $("#hdnDestinationGroup").val('');
-            $("#hdnDestinationTo").val('');
-            if (selectedToAirport.every(selected => initialData.some(item => item.to === selected))) {
-                // current page to 1
-                currentPage = 1;
-                // Get the selected value to the "From" dropdown
-                var selectedFromAirport = $("#fromAirport").val();
+            return new Promise((resolve) => {
+                handlePopUp("selectToPopup", "f");
+                $('#toAirport').select2('close');
+                // Get the selected value to the "To" dropdown
+                var selectedToAirport = $('#toAirport').val();
+                
+                //append values to popupToAirport select
+                $('#popupToAirport').val(selectedToAirport).trigger('change');
+                // Clear the options in the "From" dropdown using Select2, haven't used trigger event here bcz if we use then it will trigger fromAirport change event and the load ddls from db endpoints call twice
+                $('#fromAirport').empty();
+                checkEurope();
+                emptyDropdowns();
                 // Check if selectedToAirport is not empty
                 if (selectedToAirport.length > 0) {
-                    // Load data from "fromDDL" to "All Groups in toDDL"
-                    getCheapestPricesOnTheBasisOfToSelectionChange();
+                    populateToChange(selectedToAirport, resolve)
                 } else {
-                    if (selectedFromAirport.length > 0) {
-                        getCheapestPricesOnTheBasisOfFromSelectedDDLAndToDDLFixedValues();
+                    // Resolve the promise if selectedToAirport is empty to ensure the chain continues
+                    resolve();
+                };
+                $("#hdnDestinationGroup").val('');
+                $("#hdnDestinationTo").val('');
+                if (selectedToAirport.every(selected => initialData.some(item => item.to === selected))) {
+                    // current page to 1
+                    currentPage = 1;
+                    // Get the selected value to the "From" dropdown
+                    var selectedFromAirport = $("#fromAirport").val();
+                    // Check if selectedToAirport is not empty
+                    if (selectedToAirport.length > 0) {
+                        // Load data from "fromDDL" to "All Groups in toDDL"
+                        getCheapestPricesOnTheBasisOfToSelectionChange();
+                    } else {
+                        if (selectedFromAirport.length > 0) {
+                            getCheapestPricesOnTheBasisOfFromSelectedDDLAndToDDLFixedValues();
+                        }
+                        else {
+                            getCheapestPricesOnTheBasisOfToDDLFixedValues();
+                        }
                     }
-                    else {
-                        getCheapestPricesOnTheBasisOfToDDLFixedValues();
-                    }
+                } else {
+                    getDeparatureCities(selectedToAirport);
                 }
-            } else {
-                getDeparatureCities(selectedToAirport);
-            }
-            // });
+            });
 
         }
         function getDeparatureCities(toAirport) {
@@ -2233,7 +2023,7 @@
             });
         }
         //added by haythem
-        function populateToChange(selectedToAirport) {
+        function populateToChange(selectedToAirport, resolve = null) {
             // Make an API request to fetch data based on the selected "To" airport
             var apiUrl = ($('#toAirport').val().length === 1 && $('#toAirport').val()[0] === 'Everywhere')
                 ? 'https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetFromAirports'
@@ -2318,9 +2108,9 @@
                                                     // Populate the "airlines" dropdown with the retrieved data
                                                     populateOtherDropdowns(airlinesData, "#airline");
                                                     // Resolve the promise to signal completion
-                                                    // if (window.location.search.length > 0 && $('#toAirport').val().length == 0) {
-                                                    //     resolve();
-                                                    // }
+                                                    if (resolve) {
+                                                        resolve();
+                                                    }
 
                                                 },
                                                 error: function (error) {
@@ -2633,15 +2423,22 @@
                 //     }
             }
             // Load To Airport Dropdown and Chain the Following Operations
-            try {
-                await bindToAirportDDLWhenParams();
-                await handleToAirportChange();
-                // Only submit the form after both async operations are complete
-                submitForm();
-            } catch (error) {
-                console.error("An error occurred:", error);
-                // Handle the error appropriately
-            }
+            bindToAirportDDLWhenParams()
+                .then(handleToAirportChange) // in this function we are using promise, it will not return until promise resolves, and promise can only resolve under its onChange event and onChange event will only call if user triggers change, thats why I firstly used trigger change event and then calls this function handleToAirportChange, because if I write change event after that function, the change event never triggers because it wont move to next statement
+                .then(submitForm)
+                .catch(function (error) {
+                    console.error('An error occurred:', error);
+                });
+            // Load To Airport Dropdown and Chain the Following Operations
+            // try {
+            //     await bindToAirportDDLWhenParams();
+            //     await handleToAirportChange();
+            //     // Only submit the form after both async operations are complete
+            //     submitForm();
+            // } catch (error) {
+            //     console.error("An error occurred:", error);
+            //     // Handle the error appropriately
+            // }
 
         }
 
@@ -2651,22 +2448,22 @@
         }
 
         // Add an event listener to the radio buttons
-        $('input[name="dateOptions"]').change(handleDateOptionChange);
+        // $('input[name="dateOptions"]').change(handleDateOptionChange);
 
         // Function to handle the change event on radio buttons
-        function handleDateOptionChange() {
-            // Get references to the radio buttons and the shortStays checkbox
-            const shortStaysCheckbox = $('#shortStays');
-            const noDatesRadio = $('#noDates');
-            if (noDatesRadio.prop('checked')) {
-                // If 'No Dates' is selected, disable and uncheck the shortStays checkbox
-                shortStaysCheckbox.prop('disabled', true);
-                shortStaysCheckbox.prop('checked', false);
-            } else {
-                // If 'Dates' is selected, enable the shortStays checkbox
-                shortStaysCheckbox.prop('disabled', false);
-            }
-        }
+        // function handleDateOptionChange() {
+        //     // Get references to the radio buttons and the shortStays checkbox
+        //     const shortStaysCheckbox = $('#shortStays');
+        //     const noDatesRadio = $('#noDates');
+        //     if (noDatesRadio.prop('checked')) {
+        //         // If 'No Dates' is selected, disable and uncheck the shortStays checkbox
+        //         shortStaysCheckbox.prop('disabled', true);
+        //         shortStaysCheckbox.prop('checked', false);
+        //     } else {
+        //         // If 'Dates' is selected, enable the shortStays checkbox
+        //         shortStaysCheckbox.prop('disabled', false);
+        //     }
+        // }
         //formate stops text 
         function formateStops(stops) {
             if (stops == 0 || stops == 'D') {
@@ -2756,6 +2553,7 @@
                 container.empty();
             }
             if (deals.length > 0) {
+                $('#ddlSortByDiv').show();
                 if (isCard) {
                     $(".card-deals-container").empty(); // for pagination, need to remove prev page records
                     // Loop through each deal and generate HTML content
@@ -2787,7 +2585,7 @@
                         }
                         if (!isDepToDestForAllPrices) {
                             // hide sort by ddl
-                            $("#ddlSortByDiv").css("display", "none");
+                            $("#card-filter").css("display", "none");
                             // Generate HTML for each deal
 
                             var dealHtml = `
@@ -2814,8 +2612,13 @@
                                 window.location.href = window.location.href.split('?')[0];
 
                             });
+                            if ($('#shortStays').prop('checked')) {
+                                $("#shortStaysFilters").css("display", "flex");
+                            } else {
+                                $("#shortStaysFilters").css("display", "none");
+                            }
                             // show sort by ddl
-                            $("#ddlSortByDiv").css("display", "block");
+                            $("#card-filter").css("display", "flex");
                             //get To city
                             var toCity = deal.citys + ' (' + deal.to + ')';
                             var fromCity = await getCityFromCode(deal.from) + ' (' + deal.from + ')';
@@ -2969,11 +2772,28 @@
                 }
             }
             else {
-                alert("No Data Found");
+                resetAll();
+                var noDataHtml = `
+                      <div class="no-data" >
+                            <div class="alert alert-warning">
+                                <strong>Sorry,</strong> no results match your current selection. Please try adjusting your filters.
+                            </div>
+                           <img src="https://img.freepik.com/free-vector/hand-drawn-no-data-concept_52683-127818.jpg">
+                      </div>
+                  `;
+                gridTitle.textContent = "No Data Available";
+                $(".card-deals-container").append(noDataHtml);
             }
         }
 
-
+        function resetAll(){
+                $('.card-deals-container').empty();
+                $('#loadMoreBtn').hide();
+                $('#pagination').twbsPagination('destroy');
+                $('#pagination').remove();
+                $('#pag').html('<div id="pagination"></div>');
+                $('#ddlSortByDiv').hide();
+        }
         function calculateTimeAgo(uploadedDate) {
             // Assuming uploadedDate is a JavaScript Date object or a string in a format that can be parsed by Date
             uploadedDate = new Date(uploadedDate);
@@ -3054,17 +2874,17 @@
         }
 
         function checkEurope() {
-            toAiroport = $('#toAirport').val();
+            toAiroport = $('#popupToAirport').val();
             if (EuropeCities.some(r => toAiroport.includes(r))) {
-                $('#ShortStaysTab').show();
+                $('#shortStaysDiv').css('display', 'grid');
             } else {
-                $('#ShortStaysTab').hide();
-                MonthsTab.click();
+                $('#shortStaysDiv').hide();
+                $('#shortStays').prop('checked', false);
             }
         }
         function bindToAirportDDL() {
             // Fetch initial static records
-            getEuropeCities();
+            // getEuropeCities();
             fetchData('https://api.schoolholidaydeals.co.uk/api/GoogleWorldwide/GetToAirports')
                 .then(function (data) {
                     populateDropdown(data);
@@ -3236,7 +3056,7 @@
                                         success: function (airlinesData) {
                                             // Populate the "airlines" dropdown with the retrieved data
                                             populateOtherDropdowns(airlinesData, "#airline");
-                                            if ($("#ddlSortByDiv").css("display") === "none") {
+                                            if ($("#card-filter").css("display") === "none") {
                                                 airlinesData.shift();
                                                 populateCardOrTable(airlinesData, true, false);
                                             }
@@ -3330,7 +3150,7 @@
             return $option;
         }
         function treatCheckBox() {
-            $('input[type="checkbox"]').click(function (event) {
+            $('.dropdownContainer input[type="checkbox"]').click(function (event) {
                 var $checkbox = $(this);
                 // Ensures this code runs AFTER the browser handles click however it wants.
                 setTimeout(function () {
@@ -3746,7 +3566,7 @@
                 const valuesArray = fromValues.split(',');
                 // Use the val method from set the selected values
                 fromAirportPopup.val(valuesArray).trigger('change');
-                fromAirport.val(valuesArray);
+                fromAirport.val(valuesArray).trigger('change');
             }
         }
 
@@ -3929,13 +3749,8 @@
 
                     var startDate = new Date(yearStart, monthToInt(month), 1);
                     var endDate = new Date(yearEnd, monthToInt(month) + 1, 0);
-                    if (selectedChoice == 2) {
-                        selectedDay=daysOfWeek.value;
-                        startDay = getFirstSpecificDay(yearStart, monthToInt(month), selectedDay);
-                        startDateString = startDate.getFullYear() + '-' + pad((startDate.getMonth() + 1), 2) + '-' + pad(startDay, 2);
-                    }else{
-                        startDateString = startDate.getFullYear() + '-' + pad((startDate.getMonth() + 1), 2) + '-' + pad(startDate.getDate(), 2);
-                    }
+
+                    startDateString = startDate.getFullYear() + '-' + pad((startDate.getMonth() + 1), 2) + '-' + pad(startDate.getDate(), 2);
                     endDateString = endDate.getFullYear() + '-' + pad((endDate.getMonth() + 1), 2) + '-' + pad(endDate.getDate(), 2);
 
                     showResult.textContent = startDateString + " to " + endDateString;
@@ -3949,15 +3764,8 @@
                     // get the years
                     var startDate = new Date(yearStart, monthToInt(firstMonth), 1);
                     var endDate = new Date(yearEnd, monthToInt(secondMonth) + 1, 0);
-
-
-                    if (selectedChoice == 2) {
-                        selectedDay=daysOfWeek.value;
-                        startDay = getFirstSpecificDay(yearStart, monthToInt(month), selectedDay);
-                        startDateString = startDate.getFullYear() + '-' + pad((startDate.getMonth() + 1), 2) + '-' + pad(startDay, 2);
-                    }else{
                         startDateString = startDate.getFullYear() + '-' + pad((startDate.getMonth() + 1), 2) + '-' + pad(startDate.getDate(), 2);
-                    }
+
                     endDateString = endDate.getFullYear() + '-' + pad((endDate.getMonth() + 1), 2) + '-' + pad(endDate.getDate(), 2);
 
                     showResult.textContent = startDateString + " to " + endDateString;
@@ -3975,7 +3783,7 @@
                 MonthsResult.textContent = showResult.textContent
                 popup.style.display = "none";
 
-            }, 1000);
+            }, 100);
 
             // Temp Code
         });
@@ -4055,6 +3863,242 @@
             }[month];
         }
         //************JS FOR POPUP ENDS***************************
+        
+
+    function getEuropeCities() {
+        return $.ajax({
+            url: 'https://api.schoolholidaydeals.co.uk/api/Cheapest/GetCheapestPricesFromDepartureToSelectedGroupDomestic',
+            method: 'GET',
+            data: {
+                destination: 'Europe',
+                pageSize: 190
+            },
+            dataType: 'json'
+        })
+            .then(function (data) {
+                var deals = data.worldwideCheapestPricedRecords;
+
+                deals.forEach(function (deal) {
+                    EuropeCities.push(deal.to);
+                });
+
+            })
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                console.error('Failed to fetch Europe cities:', textStatus, errorThrown);
+                return null;
+            });
+    }
+    const handlePopUp = (id, action) => {
+        const popup = document.getElementById(id);
+        if (action == "f") {
+            popup.style.display = "none";
+        }
+        if (action == "o") {
+            popup.style.display = "flex";
+        }
+    }
+    //handle clear buttons
+    function clearAllSelections(selectId) {
+        // Clear the selection in Select2
+        $('#' + selectId).val(null).trigger('change');
+
+        // Manually trigger unselect event for each previously selected option
+        $('#' + selectId + ' option').each(function () {
+            var $option = $(this);
+            if ($option.data('selected')) {
+                $option.data('selected', false);
+                var data = $option.data();
+                $('#' + selectId).trigger({
+                    type: 'select2:unselect',
+                    params: {
+                        data: data
+                    }
+                });
+            }
+        });
+        // Make sure all checkboxes are unchecked and aria-selected is false
+        var $select2Results = $('#' + selectId).data('select2').$results;
+        $select2Results.find('li[role="option"]').each(function () {
+            $(this).attr('aria-selected', 'false');
+            $(this).find('input[type="checkbox"]').prop('checked', false);
+        });
+    }
+    showPopupDiv.addEventListener("click", () => handlePopUp("popup", "o"));
+    close.addEventListener("click", () => handlePopUp("popup", "f"));
+    closeSubscribe.addEventListener("click", () => handlePopUp("subscribe-popup", "f"));
+
+    //handle month selection
+    let selectedMonths = [];
+    const months = document.querySelectorAll('.months .month li');
+    const updateSelectedMonths = () => {
+        if (selectedMonths.length == 1) {
+            let startIndex = Array.from(months).indexOf(selectedMonths[0]);
+            for (let i = 0; i < months.length; i++) {
+                if (i < startIndex) {
+                    months[i].classList.add('non-selectable');
+                } else if (i > startIndex) {
+                    months[i].classList.remove('non-selectable');
+                }
+            }
+        } else {
+            months.forEach(m => {
+                m.classList.remove('non-selectable');
+            });
+        }
+    }
+    const clear = () => {
+        selectedMonths = [];
+        months.forEach(m => {
+            m.classList.remove('starting-month', 'ending-month', 'between-month');
+        });
+        updateSelectedMonths();
+        showResult.textContent = "____-__-__ to ____-__-__";
+    }
+    const handleMonths = (month) => {
+        let startIndex, endIndex;
+        const isSelected = selectedMonths.includes(month);
+        if (isSelected) {
+            //selected
+            if (selectedMonths.length > 1) {
+                startIndex = Array.from(months).indexOf(selectedMonths[0]);
+                endIndex = Array.from(months).indexOf(selectedMonths[1]);
+                if (month.classList.contains("starting-month")) {
+                    month.classList.remove('starting-month');
+                    selectedMonths.shift();
+                    selectedMonths[0].classList.replace('ending-month', 'starting-month');
+                } else {
+                    month.classList.remove('ending-month');
+                    selectedMonths.pop();
+                }
+                for (let i = startIndex + 1; i < endIndex; i++) {
+                    months[i].classList.remove('between-month');
+                }
+            } else {
+                month.classList.remove('starting-month');
+                selectedMonths.pop();
+            }
+        }
+        else {
+            //not yet selected
+            if (selectedMonths.length == 0) {
+                month.classList.add('starting-month');
+                selectedMonths.push(month);
+            } else {
+                startIndex = Array.from(months).indexOf(selectedMonths[0]);
+                if (selectedMonths.length == 1) {
+                    month.classList.add('ending-month');
+                    selectedMonths.push(month);
+                    endIndex = Array.from(months).indexOf(selectedMonths[1]);
+                    for (let i = startIndex + 1; i < endIndex; i++) {
+                        months[i].classList.add('between-month');
+                    }
+                } else {
+                    clear();
+                    handleMonths(month);
+                }
+            }
+        }
+
+        updateSelectedMonths();
+
+    };
+    months.forEach((month, index) => {
+        month.addEventListener('click', () => handleMonths(month));
+
+    });
+
+    const DisablePassedMonths = () => {
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth();
+        // Get all the month list items
+        const monthLists = document.querySelectorAll('.month ul');
+        // Loop through each month list
+        monthLists.forEach(monthList => {
+            const monthItems = monthList.querySelectorAll('li');
+            // Loop through each month item
+            monthItems.forEach((monthItem, index) => {
+                const itemYear = monthList.previousElementSibling.textContent.trim();
+                const itemMonth = index;
+                // Check if the month has passed
+                if (itemYear < currentYear || (itemYear == currentYear && itemMonth <= currentMonth)) {
+                    monthItem.classList.add('Disabled');
+                }
+            });
+        });
+    }
+    DisablePassedMonths();
+
+    // handle choices selection
+    const choices = document.querySelectorAll('.choices li');
+    choices.forEach((choice, index) => {
+        choice.addEventListener('click', function () {
+            selectedChoice = index;
+            clear();
+            choices.forEach(c => {
+                c.classList.remove('selected');
+            });
+            this.classList.add('selected');
+            document.getElementById(index).style.display = "block";
+            for (let i = 0; i < choices.length; i++) {
+                if (i != index) {
+                    document.getElementById(i).style.display = "none";
+                }
+            }
+        });
+
+    });
+    const showDays = document.querySelector('.show-days');
+    const generateDaysOptions = (nights) => {
+        selectedDays = nights;
+        if (nights === "") {
+            Months.style.display = "none";
+            showDays.style.display = "none";
+            return;
+        }
+        nights = parseInt(nights)
+        showDays.style.display = "block";
+        daysOfWeek.innerHTML = "";
+        const weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+        // Create days according to nights value
+        daysOfWeek.appendChild(new Option("Any", ""));
+        for (let i = 0; i < weekDays.length; i++) {
+            const startDay = weekDays[i];
+            var index = (i + nights) % weekDays.length;
+            const endDay = weekDays[index];
+            const option = new Option(`${startDay} to ${endDay}`, `${i + 1}`);
+            daysOfWeek.appendChild(option);
+        }
+    }
+    //handle select change
+    document.getElementById('nights').addEventListener('change', function () {
+        generateDaysOptions(this.value);
+        getResult();
+    });
+    daysOfWeek.addEventListener('change', function () {
+        startDateString = getFirstSpecificDay(startDateString, this.value);
+        getResult();
+    });
+
+    //handle Custom Range
+    $('input[name="daterange"]').daterangepicker({
+        opens: 'center'
+    }, function (start, end, label) {
+        startDateString = start.format('YYYY-MM-DD');
+        endDateString = end.format('YYYY-MM-DD');
+        showResult.textContent = start.format('YYYY-MM-DD') + " to " + end.format('YYYY-MM-DD');
+    });
+
+    //handle extra days
+    const extraDays = document.querySelectorAll('.extra-days span');
+    extraDays.forEach((day, index) => {
+        day.addEventListener('click', function () {
+            extraDays.forEach(d => {
+                d.classList.remove('selected');
+            });
+            this.classList.add('selected');
+        });
     });
 
     async function getCityFromCode(code) {
@@ -4067,15 +4111,20 @@
             return null;
         }
     }
-    function getFirstSpecificDay(year, month, dayOfWeek) {
+    function getFirstSpecificDay(dateString ,dayOfWeek) {
+        // dateString is with format yyyy-mm-dd , we will extract year and month from it
+        const [year, month] = dateString.split('-').map(Number);
         // Create a Date object for the 1st of the specified month
-        let date = new Date(year, month , 1);
+        let date = new Date(year, month-1, 1);
+        console.log(date);
         // Get the day of the week (1-7, where 1 is Monday and 7 is Sunday)
         let firstDayOfMonth = date.getDay() || 7;
 
         // Calculate how many days to add
-        let daysToAdd = (dayOfWeek - firstDayOfMonth + 7) % 7;
-        return daysToAdd+1;
+        let NewDay = (dayOfWeek - firstDayOfMonth + 7) % 7;
+        //return a date string format YYYY-mm-dd with the new day 
+        let newDate=`${year}-${pad(month,2)}-${pad(NewDay+1, 2)}`;
+        return newDate;
     }
 
     function toggleInputBVisibility() {
@@ -4099,6 +4148,8 @@
     clearBtn.addEventListener('click', function () {
         clear();
     });
+    });
+
 </script>
 
 
